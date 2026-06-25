@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!-- FILE DẪN XUẤT — sinh từ docs/specs/GLOSSARY.md bằng tools/gen-glossary-page.mjs. Đừng sửa tay; sửa .md rồi chạy lại. -->
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Từ điển thuật ngữ — Lixin Hub</title>
+<style>
+  :root{--bg:#0f1420;--panel:#161d2e;--card:#1b2438;--line:#2a3650;--txt:#e6ecf7;
+    --mut:#94a3c4;--gold:#ffd166;--warn:#ff9d5b;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.55;
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;}
+  header{position:sticky;top:0;z-index:30;background:rgba(15,20,32,.95);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:12px 20px}
+  .hrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1080px;margin:0 auto}
+  h1{font-size:17px;margin:0}
+  h1 .sub{color:var(--mut);font-weight:400;font-size:12.5px;margin-left:6px}
+  input[type=search]{background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);
+    padding:9px 13px;width:300px;max-width:48vw;font-size:14px;outline:none;margin-left:auto}
+  input[type=search]:focus{border-color:var(--gold)}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px 20px 70px}
+  a.home{color:var(--mut);font-size:12.5px;text-decoration:none}
+  a.home:hover{color:var(--txt)}
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin:10px 0 14px;
+    font-size:13px;color:#c8d3ea}
+  .intro b{color:var(--gold)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:6px}
+  .chip{font-size:12px;padding:5px 11px;border-radius:18px;cursor:pointer;color:#0c1220;font-weight:600;
+    border:1px solid transparent;user-select:none}
+  .chip.off{opacity:.35}
+  .count{font-size:12px;color:var(--mut);margin:10px 2px}
+  .group{margin-bottom:26px}
+  .ghead{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;margin:0 0 12px}
+  .ghead .dot{width:13px;height:13px;border-radius:4px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px}
+  .term{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+    border-left:3px solid var(--gold)}
+  .term .t{font-size:15px;font-weight:700;margin-bottom:4px}
+  .term .t b{color:#fff}
+  .term .d{font-size:13px;color:#d4ddf0}
+  .term .nw{margin-top:8px;font-size:12px;color:#ffc234;background:rgba(255,157,91,.08);
+    border:1px solid rgba(255,157,91,.22);border-radius:7px;padding:6px 9px}
+  .term .nw .lab{color:var(--warn);font-weight:600}
+  code{background:#0e1626;border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:12px;
+    font-family:"Cascadia Code",Consolas,monospace}
+  mark{background:var(--gold);color:#0c1220;border-radius:2px}
+  .empty{text-align:center;color:var(--mut);padding:40px;font-style:italic}
+  .hidden{display:none!important}
+  footer{max-width:1080px;margin:0 auto;padding:0 20px 40px;color:var(--mut);font-size:12px}
+  footer code{font-family:inherit}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <h1>📖 Từ điển thuật ngữ<span class="sub">36 thuật ngữ domain · Lixin Hub</span></h1>
+    <input id="q" type="search" placeholder="🔍 Tìm thuật ngữ hoặc định nghĩa…">
+  </div>
+</header>
+
+<div class="wrap">
+  <a class="home" href="index.html">← Về trang cổng</a>
+  <div class="intro">💡 Giải nghĩa các <b>thuật ngữ nghiệp vụ</b> dùng trong hệ thống — định nghĩa theo nghiệp vụ
+    (không theo bảng SQL). Mỗi thuật ngữ kèm phần <b style="color:var(--warn)">"Không nhầm với"</b> để tránh hiểu sai.</div>
+  <div class="chips" id="chips"></div>
+  <div class="count" id="count"></div>
+  <div id="list"></div>
+  <div class="empty hidden" id="empty">Không tìm thấy thuật ngữ nào khớp.</div>
+</div>
+
+<footer>
+  Sinh tự động từ <code>docs/specs/GLOSSARY.md</code> bằng <code>tools/gen-glossary-page.mjs</code>. Sửa từ vựng ở .md rồi chạy lại script.
+</footer>
+
+<script>
+const DATA=[{"name":"Hai tầng / multi-company","terms":[{"term":"**Tenant** (Firm)","def":"Văn phòng kế toán dịch vụ — chủ sở hữu nhiều Company. Hiện 1 tenant mặc định; có seam lên SaaS.","not":"≠ Company. Tenant *sở hữu* nhiều Company."},{"term":"**Company**","def":"Một công ty khách (sổ sách của 1 pháp nhân). `TaxCode` (MST) = username cổng thuế.","not":"≠ Tenant. Là đối tượng \"vào công ty\" để xem sổ."},{"term":"**CompanyContext**","def":"Trạng thái \"đang xem dữ liệu công ty X\" — đặt rồi mới vào **tầng trong** (Accounting). Giữ qua điều hướng NavLink (`CompanyContextState`).","not":"≠ login user. Là phạm vi dữ liệu đang thao tác."},{"term":"**Tầng ngoài** (Practice Management)","def":"Quản lý nhiều khách: staff, hợp đồng/gói, kỳ kê khai, công nợ phí dịch vụ.","not":"≠ Tầng trong."},{"term":"**Tầng trong** (Accounting)","def":"Sổ sách kế toán *của một* Company sau khi đặt CompanyContext.","not":"≠ Tầng ngoài."}]},{"name":"Lõi sổ cái kép (GL kernel)","terms":[{"term":"**GL kernel** (Sổ cái kép)","def":"Trái tim hệ thống: Chứng từ → Bút toán (Nợ=Có) → Sổ cái → Kết chuyển → BCTC. Nguồn sự thật duy nhất.","not":"Hóa đơn KHÔNG phải lõi — chỉ là 1 nguồn đầu vào."},{"term":"**Voucher** (Chứng từ)","def":"Đơn vị ghi sổ: gom nhiều bút toán cân bằng. Khi `Posted` thì Σ Nợ = Σ Có (bất biến).","not":"≠ Hóa đơn (Invoice). 1 hóa đơn có thể sinh 1 chứng từ."},{"term":"**JournalLine** (Bút toán/dòng định khoản)","def":"Một dòng Nợ hoặc Có trên một Account trong Voucher.","not":"—"},{"term":"**Account** (Tài khoản)","def":"Một mã trong hệ thống tài khoản (chart). Có cha–con.","not":"Xem `IsPostable`."},{"term":"**IsPostable** (TK lá)","def":"Chỉ TK **lá** (`IsPostable=true`) mới được ghi bút toán. TK cha (vd 111, 642, 641) chỉ tổng hợp. Form chọn TK phải lọc `IsPostable`.","not":"≠ TK cha. Sai chỗ này gây bút toán hỏng — xem [[ccdc-leaf-account-picker]]."},{"term":"**AccountKind** (loại TK)","def":"Phân loại TK (tài sản/nguồn vốn/doanh thu/chi phí…) — **kết chuyển chạy theo AccountKind**, không hardcode mã.","not":"—"},{"term":"**Chart of Accounts** (Hệ thống TK)","def":"Bộ TK theo chế độ kế toán (TT133/TT200 — 206 TK đầy đủ MISA), chọn theo Company.","not":"—"},{"term":"**FiscalPeriod** (Kỳ kế toán)","def":"Kỳ ghi sổ. Khóa kỳ (period lock) chặn sửa chứng từ trong kỳ đã khóa.","not":"—"},{"term":"**OpeningBalance** (Số dư đầu kỳ)","def":"Số dư mang sang đầu kỳ — theo TK, theo đối tượng công nợ, theo tồn kho, theo TK ngân hàng chi tiết.","not":"—"},{"term":"**Kết chuyển** (Year-end transfer)","def":"Chuyển số dư cuối kỳ về 911 → 4212 để xác định KQKD. Chạy theo `AccountKind`.","not":"—"},{"term":"**Auto-hạch toán** (auto-posting)","def":"Sinh chứng từ tự động từ nguồn (hóa đơn đã sync). **Idempotent** theo `SourceInvoiceId` — chạy lại không nhân đôi.","not":"≠ ghi tay (ManualVoucher)."},{"term":"**BCTC**","def":"Báo cáo tài chính (B01 tình hình tài chính, B02 KQKD, B09…). Dẫn xuất từ GL, không lưu bảng riêng.","not":"—"}]},{"name":"Phân hệ con (sub-ledger đẩy bút toán vào GL)","terms":[{"term":"**Partner** (KH/NCC/NLĐ)","def":"Đối tượng: khách hàng, nhà cung cấp, nhân viên — gắn công nợ AR/AP.","not":"—"},{"term":"**Item** (VTHH)","def":"Vật tư – hàng hóa – dịch vụ trong danh mục.","not":"—"},{"term":"**StockMovement** (Kho)","def":"Nhập/xuất kho; định giá **bình quân gia quyền (moving-average)** → giá vốn 632.","not":"—"},{"term":"**FixedAsset** (TSCĐ)","def":"Tài sản cố định — phân bổ khấu hao theo kỳ.","not":"≠ ToolAsset (CCDC)."},{"term":"**ToolAsset** (CCDC)","def":"Công cụ – dụng cụ — phân bổ dần (242 → 627/641/642).","not":"≠ FixedAsset (TSCĐ — TK khác)."},{"term":"**CostObject** (THCP)","def":"Đối tượng tập hợp chi phí: công trình / đơn hàng / hợp đồng / vụ việc.","not":"—"},{"term":"**CostingPeriod** (Kỳ tính giá thành)","def":"Kỳ tập hợp → phân bổ → kết chuyển → nghiệm thu giá thành.","not":"≠ FiscalPeriod."},{"term":"**PayrollSheet** (Bảng lương)","def":"Bảng tính lương → bút toán lương + TNCN lũy tiến.","not":"—"},{"term":"**DeferredRevenue** (DT nhận trước)","def":"Doanh thu nhận trước (3387) phân bổ dần.","not":"—"},{"term":"**TaxDeclaration** (Tờ khai thuế)","def":"GTGT / TNCN / TNDN / quyết toán.","not":"—"}]},{"name":"Hóa đơn & đồng bộ","terms":[{"term":"**Invoice** (Hóa đơn)","def":"Hóa đơn điện tử đồng bộ từ Cổng HĐĐT TCT — *nguồn đầu vào* để hạch toán, không phải chứng từ ghi sổ.","not":"≠ Voucher."},{"term":"**Direction**","def":"Chiều hóa đơn: `1`=mua vào, `2`=bán ra.","not":"—"},{"term":"**SourceInvoiceId**","def":"ID hóa đơn từ TCT — khóa chống trùng & chống nhân đôi auto-hạch toán.","not":"—"},{"term":"**SyncRun**","def":"Một lần quét/đồng bộ hóa đơn (có log). Idempotent qua unique `(CompanyId, Direction, SourceInvoiceId)`.","not":"—"},{"term":"**InvoiceSourceKey**","def":"Chọn nguồn hóa đơn theo Company: `Gdt` \\","not":"`Tvan` \\"}]},{"name":"Chế độ & pháp lý","terms":[{"term":"**TT133 / TT200**","def":"Hai chế độ kế toán DN — chọn theo Company; chart + kết chuyển + BCTC khác nhau.","not":"—"},{"term":"**TT99/2025**","def":"Thông tư thay TT200, hiệu lực **01/01/2026** cho DN.","not":"Xem [[regulatory-2026-tt99-tt88]]."},{"term":"**TT152/2025**","def":"Chế độ kế toán **HKD** (hộ kinh doanh), thay TT88/2021; kèm TT18/2026 (thuế).","not":"≠ TT99 (DN)."},{"term":"**MISA parity**","def":"Mục tiêu mô phỏng MISA ASP ~95-100% **từng field** (loại trừ tính năng thương mại MISA).","not":"Xem [[misa-parity-field-by-field]]."}]}];
+const COLORS=["#6c8cff","#46c1a6","#ffb454","#c084fc","#f472b6","#34d399","#38bdf8","#f87171"];
+const esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function fmt(s){
+  let t=String(s).replace(/\[\[([^\]]+)\]\]/g,"$1").replace(/\[([^\]]+)\]\([^)]+\)/g,"$1");
+  t=esc(t).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/`([^`]+)`/g,"<code>$1</code>");
+  return t;
+}
+function hi(htmlStr,q){if(!q)return htmlStr;
+  try{return htmlStr.replace(new RegExp("(?![^<]*>)("+q.replace(/[.*+?^()|[\]\\]/g,"\\$&")+")","ig"),"<mark>$1</mark>");}catch{return htmlStr;}}
+
+const active=new Set(DATA.map((_,i)=>i));
+const chipsEl=document.getElementById('chips');
+function buildChips(){
+  chipsEl.innerHTML="";
+  DATA.forEach((g,i)=>{
+    const c=document.createElement('span');
+    c.className="chip"+(active.has(i)?"":" off");
+    c.style.background=COLORS[i%COLORS.length];c.textContent=g.name;
+    c.onclick=()=>{active.has(i)?active.delete(i):active.add(i);if(!active.size)active.add(i);buildChips();render();};
+    chipsEl.appendChild(c);
+  });
+}
+
+const qEl=document.getElementById('q');
+function render(){
+  const q=qEl.value.trim().toLowerCase();
+  const list=document.getElementById('list');
+  let html="",n=0;
+  DATA.forEach((g,i)=>{
+    if(!active.has(i))return;
+    const rows=g.terms.filter(t=>!q||(t.term+" "+t.def+" "+t.not).toLowerCase().includes(q));
+    if(!rows.length)return;
+    n+=rows.length;
+    const col=COLORS[i%COLORS.length];
+    html+='<div class="group"><div class="ghead"><span class="dot" style="background:'+col+'"></span>'+esc(g.name)+'</div><div class="grid">';
+    for(const t of rows){
+      const showNot=t.not && t.not!=="—" && t.not!=="-";
+      html+='<div class="term" style="border-left-color:'+col+'">'
+        +'<div class="t">'+hi(fmt(t.term),q)+'</div>'
+        +'<div class="d">'+hi(fmt(t.def),q)+'</div>'
+        +(showNot?'<div class="nw"><span class="lab">⚠ Không nhầm với:</span> '+hi(fmt(t.not),q)+'</div>':'')
+        +'</div>';
+    }
+    html+='</div></div>';
+  });
+  list.innerHTML=html;
+  document.getElementById('count').textContent=n+" thuật ngữ";
+  document.getElementById('empty').classList.toggle('hidden',n>0);
+}
+qEl.oninput=render;
+buildChips();render();
+</script>
+</body>
+</html>
