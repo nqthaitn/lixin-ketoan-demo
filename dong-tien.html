@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo dòng tiền — Định khoản kép (Lixin Hub)</title>
+<style>
+  :root{
+    --no:#1f6feb;        /* Nợ = xanh */
+    --co:#e8590c;        /* Có = cam */
+    --ok:#2f9e44;
+    --bg:#0f1620; --panel:#172230; --line:#2a3a4d; --txt:#e7eef7; --mut:#9fb3c8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);}
+  header{padding:14px 20px;background:linear-gradient(90deg,#11233b,#0f1620);border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:18px}
+  header p{margin:4px 0 0;color:var(--mut);font-size:13px}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px 20px 60px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  select,button{font-size:14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--txt);padding:8px 12px;cursor:pointer}
+  button.primary{background:var(--no);border-color:var(--no);font-weight:600}
+  button:hover{filter:brightness(1.15)}
+  button:disabled{opacity:.4;cursor:not-allowed}
+  .legend{font-size:12px;color:var(--mut);margin-left:auto}
+  .legend b.no{color:var(--no)} .legend b.co{color:var(--co)}
+
+  .narr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--no);
+        border-radius:8px;padding:10px 14px;min-height:42px;margin-bottom:14px;font-size:14px}
+  .narr .step{color:var(--mut);font-size:12px;margin-right:8px}
+
+  /* sân khấu dòng chảy */
+  #stage{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+         min-height:230px;padding:18px;display:flex;justify-content:space-between;gap:30px;overflow:hidden}
+  .lane{flex:1;display:flex;flex-direction:column;gap:12px;justify-content:center;z-index:2}
+  .lane h3{margin:0 0 2px;font-size:12px;text-align:center;letter-spacing:.5px;color:var(--mut)}
+  .lane.credit h3{color:var(--co)} .lane.debit h3{color:var(--no)}
+  .chip{border-radius:10px;padding:10px 12px;border:1px solid var(--line);background:#0e1825;text-align:center;position:relative}
+  .lane.credit .chip{border-color:var(--co)} .lane.debit .chip{border-color:var(--no)}
+  .chip .code{font-weight:700;font-size:15px}
+  .chip .nm{font-size:11px;color:var(--mut)}
+  .chip .amt{font-size:13px;margin-top:3px}
+  .lane.credit .amt{color:var(--co)} .lane.debit .amt{color:var(--no)}
+  .midarrow{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--mut);font-size:12px;min-width:90px;z-index:2}
+  .midarrow .big{font-size:26px;color:#5b7088}
+
+  #flow{position:absolute;inset:0;pointer-events:none;z-index:3}
+  .dot{position:absolute;display:flex;align-items:center;gap:4px;transform:translate(-50%,-50%);
+       background:#ffd43b;color:#111;font-weight:700;font-size:12px;padding:3px 8px;border-radius:20px;
+       box-shadow:0 2px 10px rgba(255,212,59,.5);white-space:nowrap}
+
+  .sum{display:flex;gap:18px;align-items:center;justify-content:center;margin:14px 0;font-size:15px}
+  .sum .b{padding:6px 14px;border-radius:8px;background:var(--panel);border:1px solid var(--line)}
+  .sum .eq{font-weight:700} .sum.balanced .eq{color:var(--ok)}
+  .sum .no{color:var(--no)} .sum .co{color:var(--co)}
+
+  /* sổ chữ T */
+  h2.sec{font-size:14px;color:var(--mut);margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .ledger{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tacc{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .tacc .hd{padding:6px 10px;background:#0e1825;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .tacc .hd .c{font-weight:700} .tacc .hd .n{font-size:11px;color:var(--mut)}
+  .tag{font-size:10px;padding:1px 6px;border-radius:6px;border:1px solid}
+  .tag.D{color:var(--no);border-color:var(--no)} .tag.C{color:var(--co);border-color:var(--co)}
+  .tcols{display:grid;grid-template-columns:1fr 1px 1fr}
+  .tcols .col{padding:6px 8px;min-height:54px}
+  .tcols .vline{background:var(--line)}
+  .tcols .h{font-size:11px;color:var(--mut);text-align:center;margin-bottom:3px}
+  .tcols .no .h{color:var(--no)} .tcols .co .h{color:var(--co)}
+  .row{font-size:12px;text-align:right;font-variant-numeric:tabular-nums;padding:1px 0;animation:pop .3s}
+  @keyframes pop{from{transform:translateX(8px);opacity:0}to{transform:none;opacity:1}}
+  .bal{border-top:1px dashed var(--line);padding:5px 8px;font-size:12px;display:flex;justify-content:space-between}
+  .bal b{font-variant-numeric:tabular-nums}
+  .bal .zero{color:var(--ok)}
+  .note{font-size:12px;color:var(--mut);margin-top:6px}
+  .reports{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:780px){.reports{grid-template-columns:1fr}}
+  .rep{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .rep h4{margin:0 0 8px;font-size:13px}
+  .rep table{width:100%;border-collapse:collapse;font-size:13px}
+  .rep td{padding:3px 0} .rep td.r{text-align:right;font-variant-numeric:tabular-nums}
+  .rep tr.sum td{border-top:1px solid var(--line);font-weight:700;padding-top:6px}
+  .rep tr.hl td{color:var(--ok);font-weight:700;border-top:1px solid var(--line);padding-top:6px}
+  .rep .bsgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .rep .neg{color:var(--co)} .repok{color:var(--ok)} .repbad{color:var(--co)}
+  .result{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:15px;display:none}
+  .result.win{display:block;background:rgba(47,158,68,.12);border:1px solid var(--ok)}
+  .result.lose{display:block;background:rgba(224,89,12,.14);border:1px solid var(--co)}
+</style>
+</head>
+<body>
+<header>
+  <h1>💸 Demo dòng tiền — Định khoản kép</h1>
+  <p>Mỗi nghiệp vụ: giá trị <b>rời TK ghi Có</b> → <b>chảy sang TK ghi Nợ</b>. Σ Nợ luôn = Σ Có. (Lixin Hub · TK lá theo <b>TT99/2025</b> — chế độ KT doanh nghiệp, hiệu lực 2026)</p>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <select id="pick"></select>
+    <button id="step" class="primary">▶ Bước tiếp</button>
+    <button id="auto">⏩ Tự chạy</button>
+    <button id="reset">↺ Làm lại</button>
+    <span class="legend">Cột <b class="no">trái = Nợ</b> · cột <b class="co">phải = Có</b> · dòng chảy <b class="co">Có</b> → <b class="no">Nợ</b></span>
+  </div>
+
+  <div class="narr"><span class="step" id="stepLbl">—</span><span id="desc">Chọn một nghiệp vụ rồi bấm “Bước tiếp”.</span></div>
+
+  <div id="stage">
+    <div class="lane debit" id="laneD"><h3>ĐÍCH — ghi NỢ</h3></div>
+    <div class="midarrow"><div class="big">⟵</div><div>Nợ ⟵ Có</div></div>
+    <div class="lane credit" id="laneC"><h3>NGUỒN — ghi CÓ</h3></div>
+    <div id="flow"></div>
+  </div>
+
+  <div class="sum" id="sum">
+    <span class="b">Σ Nợ: <b class="no" id="sumNo">0</b></span>
+    <span class="eq" id="eq">≟</span>
+    <span class="b">Σ Có: <b class="co" id="sumCo">0</b></span>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <h2 class="sec">📒 Sổ chữ T (cập nhật theo từng bước)</h2>
+  <div class="ledger" id="ledger"></div>
+
+  <h2 class="sec">📊 Báo cáo tài chính (tự tính từ sổ)</h2>
+  <div class="reports" id="reports"></div>
+</div>
+
+<script>
+const ACC = {
+  '111':{n:'Tiền mặt',s:'D',g:'TS'}, '112':{n:'Tiền gửi NH',s:'D',g:'TS'}, '131':{n:'Phải thu KH',s:'D',g:'TS'},
+  '141':{n:'Tạm ứng NV',s:'D',g:'TS'}, '153':{n:'Công cụ dụng cụ',s:'D',g:'TS'}, '156':{n:'Hàng hóa',s:'D',g:'TS'},
+  '1331':{n:'Thuế GTGT đầu vào',s:'D',g:'TS'}, '242':{n:'Chi phí trả trước',s:'D',g:'TS'}, '2141':{n:'Hao mòn TSCĐ hữu hình',s:'C',g:'TS'},
+  '331':{n:'Phải trả NCC',s:'C',g:'NV'}, '334':{n:'Phải trả NLĐ',s:'C',g:'NV'},
+  '33311':{n:'Thuế GTGT đầu ra',s:'C',g:'NV'}, '3334':{n:'Thuế TNDN phải nộp',s:'C',g:'NV'}, '3411':{n:'Vay & nợ thuê TC',s:'C',g:'NV'},
+  '4111':{n:'Vốn góp chủ sở hữu',s:'C',g:'VC'}, '4212':{n:'LN chưa PP năm nay',s:'C',g:'VC'},
+  '5111':{n:'Doanh thu bán hàng hóa',s:'C',g:'DT'}, '5212':{n:'Hàng bán bị trả lại',s:'D',g:'DT'}, '5213':{n:'Giảm giá hàng bán',s:'D',g:'DT'},
+  '632':{n:'Giá vốn hàng bán',s:'D',g:'CP'},
+  '6421':{n:'CP nhân viên quản lý',s:'D',g:'CP'}, '6423':{n:'CP đồ dùng văn phòng',s:'D',g:'CP'}, '6424':{n:'CP khấu hao TSCĐ',s:'D',g:'CP'}, '6427':{n:'CP dịch vụ mua ngoài',s:'D',g:'CP'},
+  '8211':{n:'Chi phí thuế TNDN',s:'D',g:'CP'},
+  '911':{n:'Xác định KQKD',s:'N',g:'X'}
+};
+// line = [acc, debit, credit]
+const SC = [
+  {t:'📖 CÂU CHUYỆN CÔNG TY ABC — trọn 1 kỳ (A→Z)', steps:[
+    {d:'① Chủ góp vốn 500tr vào tài khoản ngân hàng. Tiền VÀO NH (Nợ 112), vốn chủ tăng (Có 4111).',
+     l:[['112',500000000,0],['4111',0,500000000]]},
+    {d:'② Rút 50tr về quỹ tiền mặt để chi tiêu. Nợ 111 / Có 112 — chuyển nội bộ giữa hai loại tiền.',
+     l:[['111',50000000,0],['112',0,50000000]]},
+    {d:'③ Mua hàng nhập kho, CHỊU nhà cung cấp — hàng 200tr + VAT 20tr.',
+     l:[['156',200000000,0],['1331',20000000,0],['331',0,220000000]]},
+    {d:'④ Trả NCC 120tr qua ngân hàng (còn nợ 100tr). Nợ 331 / Có 112.',
+     l:[['331',120000000,0],['112',0,120000000]]},
+    {d:'⑤ Bán hàng thu tiền mặt — giá bán 90tr + VAT 9tr.',
+     l:[['111',99000000,0],['5111',0,90000000],['33311',0,9000000]]},
+    {d:'⑥ Ghi giá vốn lô vừa bán: 60tr. Hàng rời kho (Có 156), giá vốn (Nợ 632).',
+     l:[['632',60000000,0],['156',0,60000000]]},
+    {d:'⑦ Bán hàng CHỊU cho khách — 150tr + VAT 15tr. Khách nợ ta (Nợ 131).',
+     l:[['131',165000000,0],['5111',0,150000000],['33311',0,15000000]]},
+    {d:'⑧ Ghi giá vốn lô bán chịu: 100tr.',
+     l:[['632',100000000,0],['156',0,100000000]]},
+    {d:'⑨ Khách trả nợ 165tr qua ngân hàng. Nợ 112 / Có 131 (hết phải thu).',
+     l:[['112',165000000,0],['131',0,165000000]]},
+    {d:'⑩ Tính lương nhân viên 40tr. Chi phí nhân viên QL (Nợ 6421), nợ người lao động (Có 334).',
+     l:[['6421',40000000,0],['334',0,40000000]]},
+    {d:'⑪ Trả lương 40tr qua ngân hàng. Nợ 334 / Có 112.',
+     l:[['334',40000000,0],['112',0,40000000]]},
+    {d:'⑫ Thuê văn phòng trả tiền mặt 10tr + VAT 1tr. CP dịch vụ mua ngoài (Nợ 6427), thuế (Nợ 1331).',
+     l:[['6427',10000000,0],['1331',1000000,0],['111',0,11000000]]},
+    {d:'⑬ Khấu trừ thuế GTGT cuối kỳ: lấy đầu ra trừ đầu vào 21tr. Nợ 33311 / Có 1331 (1331 về 0, còn phải nộp 3tr).',
+     l:[['33311',21000000,0],['1331',0,21000000]]},
+    {d:'⑭ Nộp 3tr thuế GTGT còn lại qua ngân hàng. Nợ 33311 / Có 112.',
+     l:[['33311',3000000,0],['112',0,3000000]]},
+    {d:'⑮ Tạm tính thuế TNDN 20% × LN trước thuế 30tr = 6tr. Nợ 8211 / Có 3334.',
+     l:[['8211',6000000,0],['3334',0,6000000]]},
+    {d:'⑯ CUỐI KỲ ① — Kết chuyển doanh thu 240tr sang 911. Nợ 5111 / Có 911.',
+     l:[['5111',240000000,0],['911',0,240000000]]},
+    {d:'⑰ CUỐI KỲ ② — Kết chuyển chi phí (160+50+6=216tr) sang 911. Nợ 911 / Có 632, 6421, 6427, 8211.',
+     l:[['911',216000000,0],['632',0,160000000],['6421',0,40000000],['6427',0,10000000],['8211',0,6000000]]},
+    {d:'⑱ CUỐI KỲ ③ — 911 dư Có 24tr ⇒ LÃI sau thuế 24tr ⇒ Nợ 911 / Có 4212. Kéo xuống xem Báo cáo!',
+     l:[['911',24000000,0],['4212',0,24000000]], win:'HOÀN TẤT 1 KỲ! Lãi sau thuế 24.000.000 → 4212. Tổng tài sản 630tr = Tổng nguồn vốn 630tr ✓ — xem Báo cáo KQKD & Cân đối kế toán bên dưới.'}]},
+  {t:'① Bán hàng – thu tiền mặt (20tr + VAT)', steps:[
+    {d:'Khách trả ngay tiền mặt. Tiền VÀO quỹ (Nợ 111). Doanh thu + thuế là nguồn (ghi Có).',
+     l:[['111',22000000,0],['5111',0,20000000],['33311',0,2000000]]}]},
+  {t:'② Bán hàng – khách chịu (công nợ)', steps:[
+    {d:'Khách chưa trả. Ta “phải thu” (Nợ 131 tăng). Doanh thu + thuế ghi Có.',
+     l:[['131',22000000,0],['5111',0,20000000],['33311',0,2000000]]}]},
+  {t:'③ Mua hàng nhập kho – chịu NCC (10tr + VAT)', steps:[
+    {d:'Hàng + thuế đầu vào ĐẾN (ghi Nợ). Nợ nhà cung cấp tăng (ghi Có 331).',
+     l:[['156',10000000,0],['1331',1000000,0],['331',0,11000000]]}]},
+  {t:'④ Chi tiền mặt trả nhà cung cấp (11tr)', steps:[
+    {d:'Trả nợ NCC: 331 giảm (ghi Nợ). Tiền RỜI quỹ (ghi Có 111).',
+     l:[['331',11000000,0],['111',0,11000000]]}]},
+  {t:'⑤ Thu tiền khách qua ngân hàng (22tr)', steps:[
+    {d:'Khách trả nợ: tiền VÀO ngân hàng (Nợ 112). Phải thu 131 giảm (ghi Có).',
+     l:[['112',22000000,0],['131',0,22000000]]}]},
+  {t:'⑥ Tính & trả lương (50tr)', steps:[
+    {d:'Tính lương: chi phí nhân viên QL (Nợ 6421), nợ người lao động tăng (Có 334).',
+     l:[['6421',50000000,0],['334',0,50000000]]},
+    {d:'Trả lương qua ngân hàng: hết nợ lương (Nợ 334), tiền rời NH (Có 112).',
+     l:[['334',50000000,0],['112',0,50000000]]}]},
+  {t:'⑦ Khấu hao TSCĐ kỳ này (5tr)', steps:[
+    {d:'Chi phí khấu hao (Nợ 6424). Hao mòn lũy kế tăng (Có 2141).',
+     l:[['6424',5000000,0],['2141',0,5000000]]}]},
+  {t:'⑧ Vay ngân hàng nhập quỹ (100tr)', steps:[
+    {d:'Tiền vay VÀO ngân hàng (Nợ 112). Khoản vay là nợ phải trả (Có 3411).',
+     l:[['112',100000000,0],['3411',0,100000000]]}]},
+  {t:'⑨ Hàng bán bị trả lại (giảm trừ công nợ)', steps:[
+    {d:'Khách trả lại lô hàng 5tr+VAT. Doanh thu giảm → ghi Nợ TK giảm trừ 5212; thuế đầu ra giảm (Nợ 33311); bớt phải thu khách (Có 131).',
+     l:[['5212',5000000,0],['33311',500000,0],['131',0,5500000]]}]},
+  {t:'⑩ Mua & phân bổ Công cụ dụng cụ (3 bước)', steps:[
+    {d:'Mua CCDC trả tiền mặt 6tr: công cụ VÀO (Nợ 153), tiền rời quỹ (Có 111).',
+     l:[['153',6000000,0],['111',0,6000000]]},
+    {d:'Xuất dùng → đưa vào chi phí trả trước chờ phân bổ: Nợ 242 / Có 153 (chưa tính hết vào chi phí ngay).',
+     l:[['242',6000000,0],['153',0,6000000]]},
+    {d:'Phân bổ 1 kỳ (6tr ÷ 6 kỳ = 1tr): tính dần vào chi phí đồ dùng VP (Nợ 6423), giảm trả trước (Có 242). Lặp lại mỗi kỳ.',
+     l:[['6423',1000000,0],['242',0,1000000]]}]},
+  {t:'⑪ Nộp thuế GTGT qua ngân hàng (8tr)', steps:[
+    {d:'Nộp thuế cho nhà nước: hết nợ thuế đầu ra (Nợ 33311), tiền rời ngân hàng (Có 112).',
+     l:[['33311',8000000,0],['112',0,8000000]]}]},
+  {t:'🏁 CUỐI KỲ – Kết chuyển ra LÃI (DT 100tr, CP 85tr)', steps:[
+    {d:'Bối cảnh (nạp sẵn, đã cân): 5111 Có 100tr ↔ 131; 632 Nợ 60tr ↔ 156; 6421 Nợ 25tr ↔ 111.',
+     l:[['5111',0,100000000],['131',100000000,0],['632',60000000,0],['156',0,60000000],['6421',25000000,0],['111',0,25000000]], seed:true},
+    {d:'① Kết chuyển DOANH THU sang 911: xóa 5111 về 0, đẩy 100tr sang 911.',
+     l:[['5111',100000000,0],['911',0,100000000]]},
+    {d:'② Kết chuyển CHI PHÍ sang 911: xóa 632, 6421 về 0, đẩy 85tr sang 911.',
+     l:[['911',85000000,0],['632',0,60000000],['6421',0,25000000]]},
+    {d:'③ Tính thuế TNDN 20% × (100−85)=15tr → 3tr. Chi phí thuế Nợ 8211 / Có 3334.',
+     l:[['8211',3000000,0],['3334',0,3000000]]},
+    {d:'④ Kết chuyển chi phí thuế sang 911 (đẩy nốt 3tr).',
+     l:[['911',3000000,0],['8211',0,3000000]]},
+    {d:'⑤ 911 còn dư CÓ 12tr ⇒ LÃI ⇒ Nợ 911 / Có 4212. Sau bước này 911 = 0.',
+     l:[['911',12000000,0],['4212',0,12000000]], win:'Kỳ này LÃI 12.000.000 → dồn vào 4212 (Vốn chủ sở hữu). 911 về 0 ✓'}]},
+  {t:'📉 CUỐI KỲ – Kết chuyển bị LỖ (DT 100tr, CP 120tr)', steps:[
+    {d:'Bối cảnh (nạp sẵn, đã cân): 5111 Có 100tr ↔ 131; 632 Nợ 80tr ↔ 156; 6421 Nợ 40tr ↔ 111.',
+     l:[['5111',0,100000000],['131',100000000,0],['632',80000000,0],['156',0,80000000],['6421',40000000,0],['111',0,40000000]], seed:true},
+    {d:'① Kết chuyển DOANH THU sang 911: xóa 5111 về 0, đẩy 100tr sang 911.',
+     l:[['5111',100000000,0],['911',0,100000000]]},
+    {d:'② Kết chuyển CHI PHÍ sang 911: xóa 632, 6421 về 0, đẩy 120tr sang 911.',
+     l:[['911',120000000,0],['632',0,80000000],['6421',0,40000000]]},
+    {d:'③ 911 dư NỢ 20tr (Chi phí > Doanh thu) ⇒ LỖ ⇒ Nợ 4212 / Có 911. Lỗ thì KHÔNG có thuế TNDN. Sau bước này 911 = 0.',
+     l:[['4212',20000000,0],['911',0,20000000]], lose:'Kỳ này LỖ 20.000.000 → 4212 (Vốn chủ sở hữu) giảm 20tr. 911 về 0 ✓'}]}
+];
+
+const fmt = n => (Object.is(n,-0)?0:n).toLocaleString('vi-VN');
+let scIdx=0, stepIdx=0, ledger={}, busy=false, autoOn=false;
+
+const $ = id => document.getElementById(id);
+const pick=$('pick');
+SC.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.t;pick.appendChild(o);});
+
+function reset(){
+  autoOn=false; $('auto').textContent='⏩ Tự chạy';
+  scIdx=+pick.value; stepIdx=0; ledger={}; busy=false;
+  $('flow').innerHTML=''; $('laneC').innerHTML='<h3>NGUỒN — ghi CÓ</h3>'; $('laneD').innerHTML='<h3>ĐÍCH — ghi NỢ</h3>';
+  $('result').className='result';
+  $('stepLbl').textContent='—'; $('desc').textContent='Bấm “Bước tiếp” để chạy bút toán đầu tiên.';
+  renderLedger(); updateSum(); $('step').disabled=false;
+}
+pick.onchange=reset; $('reset').onclick=reset;
+
+function touch(acc){ if(!ledger[acc]) ledger[acc]={d:0,c:0}; }
+
+function renderLedger(){
+  const wrap=$('ledger'); wrap.innerHTML='';
+  const keys=Object.keys(ledger);
+  if(!keys.length){ wrap.innerHTML='<div class="note">Chưa có tài khoản nào phát sinh.</div>'; return; }
+  keys.forEach(acc=>{
+    const a=ACC[acc]||{n:'',s:'D'}, L=ledger[acc];
+    const bal=L.d-L.c, side=bal>0?'Nợ':(bal<0?'Có':'—'), av=Math.abs(bal);
+    const el=document.createElement('div'); el.className='tacc';
+    el.innerHTML=`
+      <div class="hd"><span><span class="c">${acc}</span> <span class="n">${a.n}</span></span>
+        <span class="tag ${a.s==='N'?'D':a.s}">${a.s==='N'?'KQKD':(a.s==='D'?'dư Nợ':'dư Có')}</span></div>
+      <div class="tcols">
+        <div class="col no"><div class="h">NỢ</div>${L.d?`<div class="row">${fmt(L.d)}</div>`:''}</div>
+        <div class="vline"></div>
+        <div class="col co"><div class="h">CÓ</div>${L.c?`<div class="row">${fmt(L.c)}</div>`:''}</div>
+      </div>
+      <div class="bal"><span>Dư cuối</span><b class="${av===0?'zero':''}">${av===0?'0 ✓':fmt(av)+' '+side}</b></div>`;
+    wrap.appendChild(el);
+  });
+  renderReport();
+}
+
+function computeReport(){
+  const net=a=>{const L=ledger[a];return L?L.d-L.c:0;};            // số dư: dư Nợ dương
+  const C=a=>{const L=ledger[a];return L?L.c:0;}, D=a=>{const L=ledger[a];return L?L.d:0;};
+  const inG=g=>Object.keys(ledger).filter(a=>(ACC[a]||{}).g===g);
+  // KQKD theo PHÁT SINH trong kỳ (không bị bút toán kết chuyển kéo về 0)
+  const dt = C('5111')+C('515')+C('711') - D('5212') - D('5213');  // doanh thu thuần
+  const giaVon = D('632');
+  const cpHD = inG('CP').filter(a=>a!=='632' && !a.startsWith('821')).reduce((s,a)=>s+D(a),0); // gộp mọi TK 64xx
+  const lnTruoc = dt - giaVon - cpHD;
+  const thue = D('8211');
+  const lnSau = lnTruoc - thue;
+  // Cân đối: theo SỐ DƯ hiện tại; lãi chưa kết chuyển còn nằm ở nhóm DT/CP (+911 trung gian)
+  const lnChuaKC = -inG('DT').reduce((s,a)=>s+net(a),0) - inG('CP').reduce((s,a)=>s+net(a),0) - net('911');
+  const tsList = inG('TS'), nvList = inG('NV'), vcList = inG('VC');
+  const totalTS = tsList.reduce((s,a)=>s+net(a),0);
+  const totalNV = nvList.reduce((s,a)=>s-net(a),0) + vcList.reduce((s,a)=>s-net(a),0) + lnChuaKC;
+  return {net,dt,giaVon,cpHD,lnTruoc,thue,lnSau,lnChuaKC,tsList,nvList,vcList,totalTS,totalNV};
+}
+function renderReport(){
+  const box=$('reports');
+  if(!Object.keys(ledger).length){ box.innerHTML='<div class="note">Chạy nghiệp vụ để báo cáo hiện ra.</div>'; return; }
+  const r=computeReport();
+  const row=(lb,v,cls='')=>`<tr class="${cls}"><td>${lb}</td><td class="r">${fmt(v)}</td></tr>`;
+  let pl=`<div class="rep"><h4>📈 Kết quả kinh doanh (KQKD)</h4><table>`
+    + row('Doanh thu thuần', r.dt)
+    + row('(−) Giá vốn hàng bán', r.giaVon)
+    + row('= Lợi nhuận gộp', r.dt-r.giaVon,'sum')
+    + row('(−) Chi phí bán hàng & QLDN', r.cpHD)
+    + row('= Lợi nhuận trước thuế', r.lnTruoc,'sum')
+    + row('(−) Thuế TNDN', r.thue)
+    + row('= LỢI NHUẬN SAU THUẾ', r.lnSau,'hl')
+    + `</table></div>`;
+  const rows=(list,sign)=>list.filter(a=>r.net(a)!==0).map(a=>
+    `<tr><td>${a} ${ACC[a].n}</td><td class="r ${sign*r.net(a)<0?'neg':''}">${fmt(sign*r.net(a))}</td></tr>`).join('');
+  const lnRow = r.lnChuaKC!==0 ? `<tr><td>LN chưa phân phối (kỳ này)</td><td class="r">${fmt(r.lnChuaKC)}</td></tr>` : '';
+  const bal = r.totalTS===r.totalNV;
+  let bs=`<div class="rep"><h4>⚖️ Bảng cân đối kế toán</h4><div class="bsgrid">
+      <table><tr><td colspan="2" style="color:var(--no)"><b>TÀI SẢN</b></td></tr>${rows(r.tsList,1)}
+        <tr class="sum"><td>TỔNG TÀI SẢN</td><td class="r">${fmt(r.totalTS)}</td></tr></table>
+      <table><tr><td colspan="2" style="color:var(--co)"><b>NGUỒN VỐN</b></td></tr>${rows(r.nvList,-1)}${rows(r.vcList,-1)}${lnRow}
+        <tr class="sum"><td>TỔNG NGUỒN VỐN</td><td class="r">${fmt(r.totalNV)}</td></tr></table>
+    </div>
+    <div class="note ${bal?'repok':'repbad'}" style="text-align:center;margin-top:8px;font-weight:600">
+      ${bal?'✓ TÀI SẢN = NGUỒN VỐN = '+fmt(r.totalTS):'⚠ chưa cân'}</div></div>`;
+  box.innerHTML = pl + bs;
+}
+
+function updateSum(){
+  let sd=0,sc=0; Object.values(ledger).forEach(L=>{sd+=L.d;sc+=L.c;});
+  $('sumNo').textContent=fmt(sd); $('sumCo').textContent=fmt(sc);
+  const ok=sd===sc; $('eq').textContent=ok?'=':'≠'; $('sum').className='sum'+(ok?' balanced':'');
+}
+
+function applyStep(step){ step.l.forEach(([acc,d,c])=>{touch(acc); ledger[acc].d+=d; ledger[acc].c+=c;}); }
+
+function runStep(){
+  if(busy) return;
+  const sc=SC[scIdx];
+  if(stepIdx>=sc.steps.length){ return; }
+  const step=sc.steps[stepIdx];
+  $('stepLbl').textContent=`Bước ${stepIdx+1}/${sc.steps.length}`;
+  $('desc').textContent=step.d;
+
+  // seed step: nạp số dư nền, không animation
+  if(step.seed){ applyStep(step); step.l.forEach(([a])=>touch(a)); renderLedger(); updateSum();
+    stepIdx++; if(stepIdx>=sc.steps.length)$('step').disabled=true; if(autoOn)setTimeout(runStep,700); return; }
+
+  busy=true;
+  const credits=step.l.filter(x=>x[2]>0), debits=step.l.filter(x=>x[1]>0);
+  const laneC=$('laneC'), laneD=$('laneD');
+  laneC.innerHTML='<h3>NGUỒN — ghi CÓ</h3>'; laneD.innerHTML='<h3>ĐÍCH — ghi NỢ</h3>';
+  const chip=(acc,amt,cls)=>{const a=ACC[acc]||{n:''};const e=document.createElement('div');e.className='chip';
+    e.innerHTML=`<div class="code">${acc}</div><div class="nm">${a.n}</div><div class="amt">${fmt(amt)}</div>`;return e;};
+  const cEl={}, dEl={};
+  credits.forEach(x=>{const e=chip(x[0],x[2]);laneC.appendChild(e);cEl[x[0]]=e;});
+  debits.forEach(x=>{const e=chip(x[0],x[1]);laneD.appendChild(e);dEl[x[0]]=e;});
+
+  // cặp dòng chảy: nếu 1 nguồn → mỗi đích 1 dòng; nếu 1 đích → mỗi nguồn 1 dòng; else zip
+  let pairs=[];
+  if(credits.length===1){ debits.forEach(dn=>pairs.push([credits[0],dn,dn[1]])); }
+  else if(debits.length===1){ credits.forEach(cn=>pairs.push([cn,debits[0],cn[2]])); }
+  else { const k=Math.min(credits.length,debits.length); for(let i=0;i<k;i++)pairs.push([credits[i],debits[i],debits[i][1]]); }
+
+  const stage=$('stage').getBoundingClientRect(), flow=$('flow'); flow.innerHTML='';
+  const ctr=el=>{const r=el.getBoundingClientRect();return{x:r.left-stage.left+r.width/2,y:r.top-stage.top+r.height/2};};
+  let done=0, total=pairs.length;
+  const finish=()=>{ applyStep(step); renderLedger(); updateSum(); flow.innerHTML='';
+    if(step.win){ $('result').className='result win'; $('result').textContent='🎉 '+step.win; }
+    if(step.lose){ $('result').className='result lose'; $('result').textContent='📉 '+step.lose; }
+    stepIdx++; busy=false;
+    if(stepIdx>=sc.steps.length)$('step').disabled=true;
+    if(autoOn){ if(stepIdx<sc.steps.length) setTimeout(runStep,650); else {autoOn=false;$('auto').textContent='⏩ Tự chạy';} }
+  };
+  pairs.forEach(([c,d,amt])=>{
+    const p0=ctr(cEl[c[0]]), p1=ctr(dEl[d[0]]);
+    const dot=document.createElement('div'); dot.className='dot'; dot.innerHTML=`💵 ${fmt(amt)}`;
+    flow.appendChild(dot);
+    const t0=performance.now(), dur=1100;
+    (function step1(now){
+      let t=Math.min(1,(now-t0)/dur); const e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+      dot.style.left=(p0.x+(p1.x-p0.x)*e)+'px';
+      dot.style.top=(p0.y+(p1.y-p0.y)*e - Math.sin(e*Math.PI)*26)+'px';
+      dot.style.opacity = t<.1? t*10 : (t>.9?(1-t)*10:1);
+      if(t<1) requestAnimationFrame(step1); else { dot.remove(); if(++done===total) finish(); }
+    })(t0);
+  });
+}
+$('step').onclick=()=>{ if(!busy) runStep(); };
+$('auto').onclick=()=>{ autoOn=!autoOn; $('auto').textContent=autoOn?'⏸ Dừng':'⏩ Tự chạy';
+  if(autoOn && !busy && stepIdx<SC[scIdx].steps.length) runStep(); };
+
+reset();
+</script>
+</body>
+</html>

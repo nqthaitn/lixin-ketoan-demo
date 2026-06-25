@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Học nghiệp vụ kế toán — trực quan (Lixin Hub)</title>
+<style>
+  :root{
+    --no:#1f6feb;        /* Nợ = xanh */
+    --co:#e8590c;        /* Có = cam */
+    --ok:#2f9e44;
+    --bg:#0f1620; --panel:#172230; --line:#2a3a4d; --txt:#e7eef7; --mut:#9fb3c8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);}
+  a{color:var(--no);text-decoration:none}
+  a:hover{text-decoration:underline}
+  header{padding:16px 22px;background:linear-gradient(90deg,#11233b,#0f1620);border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:20px}
+  header p{margin:5px 0 0;color:var(--mut);font-size:13px;max-width:940px}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 22px 70px}
+
+  /* ===== vòng đời 1 nghiệp vụ ===== */
+  .life{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+  .life h2{margin:0 0 10px;font-size:14px;color:var(--mut);letter-spacing:.4px}
+  .pipe{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+  .pstep{flex:1;min-width:150px;background:#0e1825;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .pstep .n{font-size:11px;color:var(--mut)}
+  .pstep .t{font-weight:700;font-size:14px;margin:2px 0 3px}
+  .pstep .d{font-size:12px;color:var(--mut);line-height:1.4}
+  .parrow{display:flex;align-items:center;color:#5b7088;font-size:22px}
+  @media(max-width:780px){.parrow{transform:rotate(90deg)}.pstep{min-width:100%}}
+
+  /* ===== Quy tắc vàng (ghim) ===== */
+  .golden{background:linear-gradient(90deg,#2a2410,#172230);border:1px solid #b8860b;border-left:4px solid #ffd43b;
+          border-radius:12px;padding:14px 16px;margin-bottom:18px}
+  .golden h2{margin:0 0 8px;font-size:15px;color:#ffd43b}
+  .golden .rules{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+  .golden .rule{flex:1;min-width:280px;background:#0e1825;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5}
+  .golden .rule .tn{color:var(--no);font-weight:700} .golden .rule .tc{color:var(--co);font-weight:700}
+  .golden .fey{font-size:13px;color:#ffe8a3;background:rgba(255,212,59,.08);border-radius:8px;padding:8px 10px}
+  .golden .fey b{color:#ffd43b}
+
+  /* ===== thanh lọc ===== */
+  .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+  .chip-f{font-size:13px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--txt);
+          padding:7px 14px;cursor:pointer;transition:.15s}
+  .chip-f:hover{filter:brightness(1.2)}
+  .chip-f.on{background:var(--no);border-color:var(--no);font-weight:600}
+  .legend{font-size:12px;color:var(--mut);margin-left:auto}
+  .legend b.no{color:var(--no)} .legend b.co{color:var(--co)}
+  #search{font-size:14px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--txt);padding:8px 12px;min-width:200px}
+
+  /* ===== lưới thẻ ===== */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;
+        border-top:3px solid var(--cc,#5b7088)}
+  .card .hd{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .card .ic{font-size:24px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+            border-radius:10px;background:#0e1825;border:1px solid var(--line)}
+  .card .ttl{flex:1}
+  .card .ttl b{font-size:15px} .card .ttl .acc{font-size:11px;color:var(--mut);display:block;margin-top:1px}
+  .card .body{padding:12px 14px;display:flex;flex-direction:column;gap:11px}
+  .what{font-size:13.5px;line-height:1.5}
+  .sec-lbl{font-size:11px;letter-spacing:.5px;color:var(--mut);text-transform:uppercase;margin-bottom:6px;display:block}
+
+  /* feynman + khi nào */
+  .duo{display:flex;gap:10px;flex-wrap:wrap}
+  .mini{flex:1;min-width:150px;border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.45}
+  .mini .ml{font-size:11px;font-weight:700;display:block;margin-bottom:3px}
+  .mini.fey{background:rgba(255,212,59,.07);border:1px solid #6b5618} .mini.fey .ml{color:#ffd43b}
+  .mini.when{background:rgba(31,111,235,.08);border:1px solid #244a78} .mini.when .ml{color:#7fb0ff}
+
+  /* luồng các bước */
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+  .fstep{background:#0e1825;border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12px}
+  .farrow{color:#5b7088;font-size:14px}
+
+  /* ví dụ – bút toán */
+  .ex{background:#0e1825;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .ex .ed{font-size:12.5px;color:var(--mut);margin-bottom:8px;line-height:1.45}
+  table.bt{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+  table.bt th{font-size:10px;color:var(--mut);text-transform:uppercase;text-align:right;padding:0 0 4px;font-weight:600}
+  table.bt th.l{text-align:left}
+  table.bt td{padding:3px 0;border-top:1px solid var(--line)}
+  table.bt td.acc{text-align:left}
+  table.bt td.acc .c{font-weight:700} table.bt td.acc .n{color:var(--mut);font-size:11px}
+  table.bt td.d{text-align:right;color:var(--no)} table.bt td.c{text-align:right;color:var(--co)}
+  table.bt tr.tot td{border-top:1px solid var(--line);font-weight:700;color:var(--ok);font-size:11.5px}
+  .ex .why{font-size:12px;color:#cdd9e6;margin-top:9px;line-height:1.5;border-top:1px dashed var(--line);padding-top:8px}
+  .ex .why b{color:#ffd43b}
+  .ex .note{font-size:11.5px;color:var(--ok);margin-top:7px}
+  /* ví dụ – kết quả (không phải bút toán) */
+  .res{background:rgba(47,158,68,.10);border:1px solid var(--ok);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5}
+  .res b{color:var(--ok)}
+
+  /* chip ảnh hưởng */
+  .impact{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .ichip{font-size:11.5px;padding:3px 9px;border-radius:14px;background:#0e1825;border:1px solid var(--line)}
+  .ichip.up{color:#ff8a4d;border-color:#5c3a25} .ichip.down{color:#7fb0ff;border-color:#244a78}
+  .ichip.flat{color:var(--mut)}
+
+  .hidden{display:none}
+  footer{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎓 Học nghiệp vụ kế toán — trực quan & đơn giản nhất</h1>
+  <p>Mỗi nghiệp vụ trả lời đủ: <b>Là gì? · 🧒 Hiểu kiểu Feynman (ví von đời thường) · ⏰ Khi nào dùng? · ⛓️ Luồng · 💡 Ví dụ + 🤔 Vì sao + 🏷️ Ảnh hưởng.</b>
+     Định khoản kép: <b class="no">Nợ (trái, xanh)</b> · <b class="co">Có (phải, cam)</b> — luôn <b>Σ Nợ = Σ Có</b>. (Lixin Hub · TK lá theo TT99/2025)</p>
+</header>
+
+<div class="wrap">
+
+  <!-- Vòng đời chung -->
+  <div class="life">
+    <h2>🔁 VÒNG ĐỜI CỦA MỌI NGHIỆP VỤ — nhớ 4 bước này là hiểu hết</h2>
+    <div class="pipe">
+      <div class="pstep"><div class="n">Bước 1</div><div class="t">📄 Chứng từ</div><div class="d">Có việc xảy ra (mua, bán, thu, chi…) kèm giấy tờ: hóa đơn, phiếu thu/chi, bảng lương…</div></div>
+      <div class="parrow">➜</div>
+      <div class="pstep"><div class="n">Bước 2</div><div class="t">⚖️ Định khoản</div><div class="d">Ghi <b class="no">Nợ</b> / <b class="co">Có</b> vào các tài khoản — "trái tim", có quy luật (xem Quy tắc vàng).</div></div>
+      <div class="parrow">➜</div>
+      <div class="pstep"><div class="n">Bước 3</div><div class="t">📒 Vào sổ</div><div class="d">Phần mềm tự dồn vào Sổ cái, Sổ nhật ký chung, Bảng cân đối phát sinh.</div></div>
+      <div class="parrow">➜</div>
+      <div class="pstep"><div class="n">Bước 4</div><div class="t">📊 Báo cáo</div><div class="d">Cuối kỳ kết chuyển lãi/lỗ → ra Báo cáo tài chính, tờ khai thuế.</div></div>
+    </div>
+  </div>
+
+  <!-- Quy tắc vàng -->
+  <div class="golden">
+    <h2>🔑 QUY TẮC VÀNG — nhớ cái này, nghiệp vụ nào cũng tự suy ra Nợ/Có</h2>
+    <div class="rules">
+      <div class="rule"><span class="tn">TĂNG ghi NỢ ⟵</span> nhóm <b>Tài sản</b> (tiền, kho, TSCĐ, phải thu) &amp; <b>Chi phí</b>.<br>Giảm thì ghi ngược lại (Có).</div>
+      <div class="rule"><span class="tc">TĂNG ghi CÓ ⟶</span> nhóm <b>Nợ phải trả</b>, <b>Vốn chủ</b> &amp; <b>Doanh thu</b>.<br>Giảm thì ghi ngược lại (Nợ).</div>
+    </div>
+    <div class="fey">🧒 <b>Hiểu kiểu Feynman:</b> bên trái (<b style="color:#7fb0ff">Nợ</b>) = "thứ mình ĐANG CÓ hoặc ĐÃ TIÊU"; bên phải (<b style="color:#ff8a4d">Có</b>) = "thứ mình ĐANG NỢ hoặc VỪA KIẾM được". Mỗi việc luôn chạm 2 bên cho cân.</div>
+  </div>
+
+  <!-- Bộ lọc -->
+  <div class="filters">
+    <span class="chip-f on" data-g="all">Tất cả</span>
+    <span class="chip-f" data-g="tien">💵 Tiền</span>
+    <span class="chip-f" data-g="muaban">🛒 Mua – Bán</span>
+    <span class="chip-f" data-g="khots">📦 Kho – Tài sản</span>
+    <span class="chip-f" data-g="luongthue">🧾 Lương – Thuế</span>
+    <span class="chip-f" data-g="sx">🏭 Sản xuất</span>
+    <span class="chip-f" data-g="cuoiky">🏁 Tổng hợp – Cuối kỳ</span>
+    <input id="search" placeholder="🔎 Tìm nghiệp vụ / tài khoản…">
+    <span class="legend"><b class="no">Nợ</b> = đến · <b class="co">Có</b> = rời</span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    💡 Xem thêm bản <a href="dong-tien.html">💸 Demo dòng tiền A→Z</a> — chạy từng bước 1 kỳ kế toán của Công ty ABC (dùng demo cho KTT).
+    <br>Trang học tĩnh, độc lập với phần mềm — mở trực tiếp bằng trình duyệt, không cần chạy server.
+  </footer>
+</div>
+
+<script>
+// Danh mục tài khoản (để hiện tên cho dễ hiểu)
+const ACC = {
+  '111':'Tiền mặt', '112':'Tiền gửi ngân hàng', '131':'Phải thu khách hàng', '133':'Thuế GTGT được khấu trừ',
+  '1331':'Thuế GTGT đầu vào', '141':'Tạm ứng', '152':'Nguyên vật liệu', '154':'Chi phí SX dở dang',
+  '155':'Thành phẩm', '156':'Hàng hóa', '211':'Tài sản cố định hữu hình', '214':'Hao mòn TSCĐ',
+  '242':'Chi phí trả trước', '331':'Phải trả nhà cung cấp', '334':'Phải trả người lao động',
+  '3331':'Thuế GTGT phải nộp', '33311':'Thuế GTGT đầu ra', '3334':'Thuế TNDN phải nộp', '3335':'Thuế TNCN',
+  '3383':'Bảo hiểm xã hội', '4111':'Vốn góp chủ sở hữu', '4212':'LN chưa phân phối', '421':'LN chưa phân phối',
+  '511':'Doanh thu bán hàng', '5111':'Doanh thu bán hàng', '621':'CP nguyên vật liệu trực tiếp',
+  '622':'CP nhân công trực tiếp', '627':'CP sản xuất chung', '632':'Giá vốn hàng bán',
+  '6421':'CP nhân viên quản lý', '6423':'CP đồ dùng văn phòng', '6424':'CP khấu hao TSCĐ', '642':'CP quản lý DN',
+  '811':'Chi phí khác', '8211':'Chi phí thuế TNDN', '911':'Xác định kết quả KD'
+};
+
+// màu theo nhóm
+const COL = {tien:'#1f6feb', muaban:'#12b886', khots:'#ae3ec9', luongthue:'#f59f00', sx:'#e64980', cuoiky:'#5c7cfa'};
+
+// Mỗi nghiệp vụ: g nhóm · ic · name · acc · what · fey (Feynman) · when · flow[] · ex{d,l,why,note} HOẶC res · imp[]
+const OPS = [
+  {g:'tien', ic:'🏁', name:'Số dư đầu kỳ', acc:'mọi TK',
+   what:'Khi BẮT ĐẦU dùng phần mềm, nhập số dư hiện có của từng tài khoản (lấy từ sổ cũ) làm điểm xuất phát.',
+   fey:'Như mở sổ chi tiêu mới: trang đầu ghi "trong ví đang có X, trong tủ đang có Y" làm mốc.',
+   when:'Chỉ làm 1 lần — lúc bắt đầu dùng phần mềm hoặc đầu năm tài chính.',
+   flow:['Lấy số dư cuối năm trước','Nhập từng TK (tiền, kho, công nợ…)','Kiểm tra Tổng Nợ = Tổng Có'],
+   res:'Ví dụ đầu kỳ: <b>tiền mặt 50tr</b>, <b>hàng tồn 200tr</b>, <b>nợ NCC 100tr</b>, <b>vốn 150tr</b>. Tổng tài sản (250) = Nguồn vốn (250).',
+   imp:[['flat','📌 Mốc khởi đầu, chưa ảnh hưởng lãi/lỗ']]},
+
+  {g:'tien', ic:'💵', name:'Tiền mặt (Quỹ)', acc:'TK 111',
+   what:'Thu vào / chi ra bằng tiền mặt tại két công ty. Mỗi lần lập 1 phiếu thu hoặc phiếu chi.',
+   fey:'Giống cái ví của bạn: ai đưa tiền thì ví dày lên, mình rút ra tiêu thì ví mỏng đi.',
+   when:'Mỗi lần thu hoặc chi bằng tiền mặt thật tại két.',
+   flow:['Lập phiếu thu / phiếu chi','Ghi sổ','Quỹ tiền mặt 111 tăng / giảm'],
+   ex:{d:'Khách trả nợ 5.000.000 bằng tiền mặt.',
+   l:[['111',5000000,0],['131',0,5000000]],
+   why:'Tiền vào két → <b>tài sản tăng → ghi Nợ 111</b>. Khách hết nợ → phải thu giảm → ghi Có 131.'},
+   imp:[['up','⬆️ Tiền mặt'],['down','⬇️ Phải thu']]},
+
+  {g:'tien', ic:'🏦', name:'Tiền gửi ngân hàng', acc:'TK 112',
+   what:'Thu / chi qua tài khoản ngân hàng. Căn cứ là giấy báo Có (tiền vào) / báo Nợ (tiền ra) của ngân hàng.',
+   fey:'Như app ngân hàng trên điện thoại: thấy thông báo "+tiền" hay "−tiền" là ghi vào sổ.',
+   when:'Mỗi lần có giao dịch qua tài khoản ngân hàng.',
+   flow:['Nhận giấy báo của ngân hàng','Ghi sổ','TK 112 tăng / giảm'],
+   ex:{d:'Chuyển khoản trả nhà cung cấp 11.000.000.',
+   l:[['331',11000000,0],['112',0,11000000]],
+   why:'Trả bớt nợ → <b>nợ phải trả giảm → ghi Nợ 331</b>. Tiền rời ngân hàng → tài sản giảm → ghi Có 112.'},
+   imp:[['down','⬇️ Tiền gửi'],['down','⬇️ Nợ phải trả']]},
+
+  {g:'muaban', ic:'🛒', name:'Mua hàng', acc:'TK 331',
+   what:'Mua hàng hóa / dịch vụ phục vụ kinh doanh. Chưa trả tiền ngay thì ghi nợ nhà cung cấp (331).',
+   fey:'Như đi chợ mua chịu: cầm hàng về trước, ghi vào sổ "còn nợ người bán bao nhiêu".',
+   when:'Mỗi khi mua hàng/dịch vụ có hóa đơn đầu vào.',
+   flow:['Nhận hóa đơn mua','Nhập chứng từ mua hàng','Phải trả NCC 331 tăng'],
+   ex:{d:'Mua hàng 10tr + thuế GTGT 1tr, còn nợ NCC.',
+   l:[['156',10000000,0],['1331',1000000,0],['331',0,11000000]],
+   why:'Hàng về kho + thuế được khấu trừ → <b>tài sản tăng → ghi Nợ 156, 1331</b>. Chưa trả tiền → nợ NCC tăng → ghi Có 331.'},
+   imp:[['up','⬆️ Hàng tồn'],['up','⬆️ Nợ phải trả']]},
+
+  {g:'muaban', ic:'💰', name:'Bán hàng', acc:'TK 511 · 131',
+   what:'Bán hàng hóa / dịch vụ, ghi nhận doanh thu. Khách chưa trả thì ghi phải thu (131).',
+   fey:'Như bán online cho khách quen ghi nợ: giao hàng xong, ghi "khách này còn nợ mình bao nhiêu".',
+   when:'Mỗi khi xuất hóa đơn bán hàng / dịch vụ.',
+   flow:['Lập hóa đơn bán','Ghi doanh thu + thuế','(Hàng kho: xuất giá vốn)','Phải thu 131 tăng'],
+   ex:{d:'Bán hàng 20tr + thuế GTGT 2tr, khách chịu.',
+   l:[['131',22000000,0],['511',0,20000000],['33311',0,2000000]],
+   why:'Khách chưa trả → tài sản phải thu tăng → ghi Nợ 131. Bán được hàng → <b>doanh thu tăng → ghi Có 511</b>; thuế thu hộ Nhà nước → Có 33311.',
+   note:'Nếu là hàng trong kho, đồng thời ghi giá vốn: Nợ 632 / Có 156.'},
+   imp:[['up','⬆️ Doanh thu'],['up','⬆️ Lãi'],['up','⬆️ Phải thu']]},
+
+  {g:'muaban', ic:'🧾', name:'Hóa đơn điện tử', acc:'HĐĐT',
+   what:'Lập, ký số & phát hành hóa đơn đầu ra cho khách; lưu hóa đơn đầu vào. Mỗi HĐ bán đi kèm 1 bút toán doanh thu.',
+   fey:'Tờ hóa đơn chỉ là "biên nhận điện tử" — bằng chứng có bán, không phải phép tính.',
+   when:'Mỗi lần bán hàng cần xuất hóa đơn cho khách (bắt buộc theo luật).',
+   flow:['Tạo hóa đơn từ đơn bán','Ký số & phát hành','Gửi khách + gửi cơ quan thuế'],
+   res:'Hóa đơn là <b>chứng từ</b> — phần định khoản giống nghiệp vụ <b>Bán hàng</b>. Ví dụ HĐ 22tr (gồm 2tr thuế) → doanh thu 20tr, thuế đầu ra 2tr.',
+   imp:[['flat','📌 Là chứng từ — định khoản theo Bán hàng']]},
+
+  {g:'khots', ic:'📦', name:'Kho (Nhập – Xuất – Tồn)', acc:'TK 156 · 632',
+   what:'Theo dõi nhập, xuất, tồn kho. Khi xuất bán, phần mềm tự tính giá vốn (bình quân hoặc FIFO).',
+   fey:'Như hũ gạo ở nhà: đong vào thì đầy, múc ra nấu thì vơi; mỗi lần múc tính "mất bao nhiêu tiền gạo".',
+   when:'Mỗi lần nhập hàng về hoặc xuất hàng đi bán / sử dụng.',
+   flow:['Nhập kho (Nợ 156)','Xuất kho (Có 156)','Tồn = Nhập − Xuất'],
+   ex:{d:'Trước đó nhập 100 con gà giá 80.000/con. Nay xuất bán 30 con → 30 × 80.000 = 2.400.000.',
+   l:[['632',2400000,0],['156',0,2400000]],
+   why:'Hàng rời kho → tài sản kho giảm → ghi Có 156. Phần đó thành <b>chi phí giá vốn → ghi Nợ 632</b>.'},
+   imp:[['up','⬆️ Chi phí (giá vốn)'],['down','⬇️ Hàng tồn']]},
+
+  {g:'khots', ic:'🔧', name:'Công cụ dụng cụ', acc:'TK 242',
+   what:'Mua đồ dùng giá trị nhỏ (bàn ghế, máy in…). Không tính hết vào chi phí 1 lần mà PHÂN BỔ dần nhiều tháng.',
+   fey:'Mua nồi cơm điện dùng 2 năm — không tính "tốn hết" hôm mua, mà chia đều ra từng tháng.',
+   when:'Lúc mua (ghi Nợ 242); rồi lặp lại mỗi tháng để phân bổ tới khi hết.',
+   flow:['Mua (Nợ 242)','Mỗi tháng phân bổ Nợ 642 / Có 242','Đến khi 242 về 0'],
+   ex:{d:'Máy in 6.000.000 phân bổ 12 tháng → mỗi tháng 500.000.',
+   l:[['6423',500000,0],['242',0,500000]],
+   why:'Mỗi tháng "mòn" một phần → <b>chi phí tăng → ghi Nợ 6423</b>. Khoản chờ phân bổ giảm dần → Có 242.',
+   note:'Lặp 12 lần → hết 6tr, 242 về 0.'},
+   imp:[['up','⬆️ Chi phí'],['down','⬇️ Lãi']]},
+
+  {g:'khots', ic:'🏢', name:'Tài sản cố định', acc:'TK 211 · 214',
+   what:'Tài sản lớn dùng lâu dài (xe, máy móc, nhà xưởng). Mỗi tháng trích KHẤU HAO một phần vào chi phí.',
+   fey:'Mua xe máy đi làm: không tính tốn hết tiền xe trong 1 tháng, mà rải đều suốt mấy năm dùng nó.',
+   when:'Lúc mua (ghi Nợ 211); rồi lặp lại mỗi tháng để khấu hao.',
+   flow:['Ghi tăng tài sản (Nợ 211)','Mỗi tháng khấu hao Nợ 642 / Có 214','Còn lại = Nguyên giá − Hao mòn'],
+   ex:{d:'Ô tô 240tr, khấu hao 5 năm = 60 tháng → mỗi tháng 4.000.000.',
+   l:[['6424',4000000,0],['214',0,4000000]],
+   why:'Hao mòn mỗi tháng là <b>chi phí → ghi Nợ 6424</b>. Nguyên giá 211 giữ nguyên; hao mòn dồn vào Có 214 (trừ lùi tài sản).',
+   note:'Nguyên giá 211 không đổi; 214 cộng dồn dần.'},
+   imp:[['up','⬆️ Chi phí'],['down','⬇️ Lãi']]},
+
+  {g:'luongthue', ic:'👷', name:'Tiền lương', acc:'TK 334',
+   what:'Tính lương nhân viên, trích bảo hiểm, khấu trừ thuế TNCN rồi chi trả phần thực lĩnh.',
+   fey:'Như trả công người giúp việc: ghi "phải trả công bao nhiêu", trừ bảo hiểm/thuế, còn lại đưa tận tay.',
+   when:'Cuối mỗi tháng khi tính lương cho nhân viên.',
+   flow:['Lập bảng lương','Ghi chi phí lương Nợ 642 / Có 334','Trích BH + khấu trừ TNCN','Chi trả Nợ 334 / Có 111,112'],
+   ex:{d:'Tính lương 20tr cho bộ phận quản lý.',
+   l:[['6421',20000000,0],['334',0,20000000]],
+   why:'Trả công cho nhân viên là <b>chi phí → ghi Nợ 6421</b>. Chưa đưa tiền ngay → thành khoản phải trả NLĐ → ghi Có 334.',
+   note:'Sau đó khấu trừ BH (Có 3383), thuế TNCN (Có 3335); còn lại chi trả Nợ 334 / Có 112.'},
+   imp:[['up','⬆️ Chi phí'],['down','⬇️ Lãi'],['up','⬆️ Phải trả NLĐ']]},
+
+  {g:'luongthue', ic:'🧮', name:'Thuế', acc:'TK 333',
+   what:'Kê khai và nộp các loại thuế: GTGT, thu nhập cá nhân (TNCN), thu nhập DN (TNDN), lệ phí môn bài.',
+   fey:'Như phí chung cư / thuế xe: gom lại theo kỳ rồi nộp; thuế GTGT là tiền thu hộ Nhà nước, đến kỳ trả lại.',
+   when:'Theo kỳ kê khai (tháng / quý / năm) tùy từng loại thuế.',
+   flow:['Tổng hợp số liệu từ chứng từ','Lập tờ khai (GTGT, TNCN…)','Nộp thuế Nợ 333x / Có 112'],
+   ex:{d:'Trong kỳ GTGT đầu ra 2tr − đầu vào 1tr = phải nộp 1tr. Khi nộp:',
+   l:[['3331',1000000,0],['112',0,1000000]],
+   why:'Nộp thuế → <b>khoản nợ thuế giảm → ghi Nợ 3331</b>. Tiền rời ngân hàng → ghi Có 112.'},
+   imp:[['down','⬇️ Tiền'],['down','⬇️ Nợ thuế']]},
+
+  {g:'sx', ic:'🏭', name:'Giá thành', acc:'TK 154 · 155',
+   what:'DN sản xuất: gom 3 loại chi phí — vật liệu (621), nhân công (622), chung (627) — để tính giá thành 1 sản phẩm.',
+   fey:'Như nấu 100 tô phở: cộng hết tiền bánh phở + thịt + công + gas, chia 100 → biết mỗi tô tốn bao nhiêu.',
+   when:'Cuối kỳ, sau khi đã tập hợp đủ chi phí và sản phẩm hoàn thành nhập kho.',
+   flow:['Tập hợp CP 621 · 622 · 627','Kết chuyển vào 154 (dở dang)','Nhập kho thành phẩm 155'],
+   ex:{d:'Tổng chi phí 36tr làm ra 100 sản phẩm → 360.000/SP. Hoàn thành nhập kho:',
+   l:[['155',36000000,0],['154',0,36000000]],
+   why:'Sản phẩm xong nhập kho → <b>thành phẩm (tài sản) tăng → ghi Nợ 155</b>. Chi phí dở dang chuyển hết thành sản phẩm → Có 154.'},
+   imp:[['up','⬆️ Thành phẩm'],['down','⬇️ CP dở dang']]},
+
+  {g:'cuoiky', ic:'📑', name:'Hợp đồng', acc:'gắn mã HĐ',
+   what:'Theo dõi riêng doanh thu, chi phí, lãi/lỗ và công nợ của TỪNG hợp đồng / dự án.',
+   fey:'Như mỗi "dự án nhỏ" có một cuốn sổ riêng để biết dự án nào lời, dự án nào lỗ.',
+   when:'Khi muốn biết lãi/lỗ riêng từng hợp đồng (gắn mã HĐ vào bút toán liên quan).',
+   flow:['Đăng ký hợp đồng','Gắn mã HĐ vào các bút toán','Báo cáo lãi/lỗ theo hợp đồng'],
+   res:'Ví dụ Hợp đồng A: doanh thu <b>100tr</b> − chi phí <b>70tr</b> = <b>lãi 30tr</b>. Mỗi hợp đồng có "mini báo cáo" riêng dù dùng chung sổ.',
+   imp:[['flat','📌 Báo cáo lãi/lỗ theo từng hợp đồng']]},
+
+  {g:'cuoiky', ic:'✍️', name:'Chứng từ nghiệp vụ khác', acc:'bút toán tay',
+   what:'Nhập TAY mọi nghiệp vụ chưa có phân hệ riêng. Tự chọn TK ghi Nợ / Có, miễn Σ Nợ = Σ Có.',
+   fey:'Như ô "ghi chú khác" trong sổ chi tiêu — việc gì chưa có mục sẵn thì tự ghi tay vào đây.',
+   when:'Khi cần phân bổ, điều chỉnh, kết chuyển… mà không có phân hệ riêng.',
+   flow:['Chọn các TK Nợ / Có','Nhập số tiền (cân Nợ = Có)','Ghi sổ'],
+   ex:{d:'Phân bổ chi phí thuê văn phòng trả trước 500.000 vào tháng này.',
+   l:[['6423',500000,0],['242',0,500000]],
+   why:'Đưa phần thuê của tháng vào <b>chi phí → ghi Nợ 6423</b>. Khoản trả trước dùng bớt → giảm tài sản → ghi Có 242.'},
+   imp:[['flat','🎚️ Tùy nghiệp vụ bạn nhập']]},
+
+  {g:'cuoiky', ic:'🔄', name:'Kết chuyển lãi / lỗ', acc:'TK 911 · 421',
+   what:'CUỐI KỲ: dồn toàn bộ doanh thu và chi phí về TK 911 để biết lãi hay lỗ, rồi chuyển kết quả về 421.',
+   fey:'Cuối tháng tổng kết: cộng hết tiền kiếm được, trừ hết tiền tiêu, xem dư (lãi) hay thiếu (lỗ).',
+   when:'Cuối kỳ kế toán (tháng / quý / năm), trước khi lập báo cáo.',
+   flow:['KC doanh thu Nợ 511 / Có 911','KC chi phí Nợ 911 / Có 6xx,632','Lãi/lỗ chuyển về 421'],
+   ex:{d:'Doanh thu kỳ 120tr − tổng chi phí 96tr = lãi 24tr. 911 dư Có 24tr → chuyển thành lợi nhuận:',
+   l:[['911',24000000,0],['4212',0,24000000]],
+   why:'Phần doanh thu dư sau khi trừ chi phí là <b>lãi → ghi vào vốn (Có 4212)</b>; đóng 911 về 0 bằng ghi Nợ 911.',
+   note:'Nếu chi phí > doanh thu thì LỖ: làm ngược lại Nợ 4212 / Có 911.'},
+   imp:[['flat','🏁 Chốt Lãi/Lỗ của kỳ']]},
+
+  {g:'cuoiky', ic:'📊', name:'Báo cáo tài chính', acc:'B01 · B02',
+   what:'Tổng hợp tất cả thành 2 báo cáo chính: Bảng cân đối kế toán (B01 — có gì, nợ gì) và Kết quả kinh doanh (B02 — lãi/lỗ).',
+   fey:'Như bản "tổng kết sức khỏe tài chính": đang có bao nhiêu, nợ bao nhiêu, năm nay lời hay lỗ.',
+   when:'Cuối năm tài chính (và khi cần báo cáo giữa kỳ).',
+   flow:['Khóa sổ kỳ','Lập BCTC (B01, B02…)','In / Xuất PDF để nộp'],
+   res:'Quy luật vàng: <b>Tổng Tài sản = Tổng Nguồn vốn</b>. Ví dụ Công ty ABC cuối kỳ: Tài sản = Nguồn vốn = <b>630tr</b>, lợi nhuận sau thuế <b>24tr</b>.',
+   imp:[['flat','🎯 Đích đến cuối cùng của mọi nghiệp vụ']]},
+];
+
+const fmt = n => n.toLocaleString('vi-VN');
+
+function btTable(l){
+  let dr=0, cr=0;
+  let rows = l.map(([a,d,c])=>{
+    dr+=d; cr+=c;
+    return `<tr><td class="acc"><span class="c">${a}</span> <span class="n">${ACC[a]||''}</span></td>`
+      + `<td class="d">${d?fmt(d):''}</td><td class="c">${c?fmt(c):''}</td></tr>`;
+  }).join('');
+  return `<table class="bt"><tr><th class="l">Tài khoản</th><th>Nợ</th><th>Có</th></tr>${rows}`
+    + `<tr class="tot"><td>Σ cân</td><td class="d">${fmt(dr)}</td><td class="c">${fmt(cr)}</td></tr></table>`;
+}
+
+function card(o){
+  const flow = o.flow.map((s,i)=> (i?'<span class="farrow">➜</span>':'') + `<span class="fstep">${s}</span>`).join('');
+  let example;
+  if(o.ex){
+    example = `<div class="ex"><div class="ed">${o.ex.d}</div>${btTable(o.ex.l)}`
+      + (o.ex.why?`<div class="why">🤔 <b>Vì sao:</b> ${o.ex.why}</div>`:'')
+      + (o.ex.note?`<div class="note">↳ ${o.ex.note}</div>`:'') + `</div>`;
+  } else {
+    example = `<div class="res">${o.res}</div>`;
+  }
+  const imp = (o.imp||[]).map(([k,t])=>`<span class="ichip ${k}">${t}</span>`).join('');
+  return `<div class="card" data-g="${o.g}" data-s="${(o.name+' '+o.acc+' '+o.what+' '+o.fey).toLowerCase()}" style="--cc:${COL[o.g]}">
+    <div class="hd"><div class="ic">${o.ic}</div>
+      <div class="ttl"><b>${o.name}</b><span class="acc">${o.acc}</span></div></div>
+    <div class="body">
+      <div class="what">${o.what}</div>
+      <div class="duo">
+        <div class="mini fey"><span class="ml">🧒 Hiểu kiểu Feynman</span>${o.fey}</div>
+        <div class="mini when"><span class="ml">⏰ Khi nào dùng</span>${o.when}</div>
+      </div>
+      <div><span class="sec-lbl">⛓️ Luồng</span><div class="flow">${flow}</div></div>
+      <div><span class="sec-lbl">💡 Ví dụ</span>${example}</div>
+      <div class="impact"><span class="sec-lbl" style="margin:0 4px 0 0">🏷️ Ảnh hưởng</span>${imp}</div>
+    </div></div>`;
+}
+
+const grid = document.getElementById('grid');
+grid.innerHTML = OPS.map(card).join('');
+
+// Lọc theo nhóm + tìm kiếm
+let curG = 'all';
+function apply(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  document.querySelectorAll('.card').forEach(c=>{
+    const okG = curG==='all' || c.dataset.g===curG;
+    const okQ = !q || c.dataset.s.includes(q);
+    c.classList.toggle('hidden', !(okG && okQ));
+  });
+}
+document.querySelectorAll('.chip-f').forEach(ch=>ch.onclick=()=>{
+  document.querySelectorAll('.chip-f').forEach(x=>x.classList.remove('on'));
+  ch.classList.add('on'); curG = ch.dataset.g; apply();
+});
+document.getElementById('search').oninput = apply;
+</script>
+</body>
+</html>
