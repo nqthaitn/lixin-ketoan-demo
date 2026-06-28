@@ -159,7 +159,7 @@
   <h2 class="sec" id="tk"><span class="n">①</span> Bảng tài khoản dùng trong kỳ</h2>
   <p class="lead">Tài khoản (TK) là "ngăn kéo" gom từng loại tài sản/nguồn vốn/thu chi. Hệ thống TK chuẩn theo Thông tư.</p>
   <div class="legend">
-    <div><code>111</code> Tiền mặt &nbsp;·&nbsp; <code>112</code> Tiền gửi ngân hàng</div>
+    <div><code>111</code> Tiền mặt &nbsp;·&nbsp; <code>112</code> Tiền gửi NH <i>(chi tiết theo từng TK ngân hàng)</i></div>
     <div><code>131</code> Phải thu khách hàng &nbsp;·&nbsp; <code>331</code> Phải trả người bán</div>
     <div><code>1331</code> Thuế GTGT được khấu trừ (đầu vào)</div>
     <div><code>156</code> Hàng hóa (tồn kho)</div>
@@ -176,6 +176,9 @@
   <div class="note">⚠️ <b>Chỉ hạch toán vào TK lá</b> (mã chi tiết nhất, có thể ghi sổ — IsPostable), <b>KHÔNG ghi vào TK cha/tổng hợp</b>.
     Ví dụ: dùng <code>5111</code> chứ không dùng <code>511</code>; <code>33311</code> chứ không <code>3331</code>; <code>2113</code> chứ không <code>211</code>;
     <code>1331</code> chứ không <code>133</code>. TK cha chỉ để cộng dồn lên báo cáo. Phần mềm sẽ chặn nếu ghi vào TK cha.</div>
+  <div class="note">👥 <b>TK theo dõi chi tiết</b> — khi hạch toán, ngoài mã TK còn phải chỉ rõ đối tượng chi tiết, nếu không phần mềm chặn:
+    <code>112</code> → <b>TK ngân hàng nào</b> (ví dụ này dùng <b>Vietcombank 0123456789</b>); <code>131</code>/<code>331</code> → <b>khách hàng / nhà cung cấp nào</b> (để ra công nợ + tuổi nợ chi tiết);
+    có TK còn theo dõi theo hợp đồng/công trình. Nhờ vậy mới lên được sổ chi tiết tiền gửi, công nợ từng đối tượng.</div>
   <div class="note">Thuế suất GTGT trong ví dụ dùng <b>10%</b> cho dễ tính (thực tế tùy mặt hàng: 0% / 5% / 8% / 10%).</div>
 
   <h2 class="sec" id="nv"><span class="n">②</span> 11 nghiệp vụ trong kỳ (tháng 6)</h2>
@@ -187,7 +190,7 @@
     <div class="body">
       <div class="step"><b>Bước làm:</b> Tổng hợp → <span class="scr">Chứng từ nghiệp vụ khác</span>.<br>Chứng từ: Giấy báo Có ngân hàng.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
-        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">500.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH (Vietcombank)</td><td class="r">500.000.000</td></tr>
         <tr><td><span class="tkco">Có 41111</span> — Vốn góp</td><td class="r">500.000.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> tiền vào ngân hàng → tài sản <b>112 tăng</b> (ghi Nợ); nguồn hình thành là vốn chủ → <b>41111 tăng</b> (ghi Có).</div>
     </div>
@@ -200,7 +203,7 @@
       <div class="step"><b>Bước làm:</b> <span class="scr">Tài sản cố định</span> → Ghi tăng (kèm bút toán mua).<br>Khai báo: nguyên giá 360tr, khấu hao 60 tháng.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 2113</span> — TSCĐ (nguyên giá)</td><td class="r">360.000.000</td></tr>
-        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">360.000.000</td></tr></table>
+        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH (Vietcombank)</td><td class="r">360.000.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> đổi tiền lấy tài sản dài hạn — <b>2113 tăng</b>, <b>112 giảm</b>. Xe sẽ được <b>khấu hao dần</b> vào chi phí mỗi tháng (xem nghiệp vụ 9).</div>
     </div>
   </div>
@@ -225,7 +228,7 @@
       <div class="step"><b>Bước làm:</b> <span class="scr">Tiền gửi</span> → Chi tiền → "Trả tiền theo hóa đơn" (chọn HĐ mua còn nợ).</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 331</span> — Phải trả người bán</td><td class="r">22.000.000</td></tr>
-        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">22.000.000</td></tr></table>
+        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH (Vietcombank)</td><td class="r">22.000.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> trả nợ → <b>331 giảm về 0</b> (ghi Nợ), tiền ra khỏi ngân hàng → <b>112 giảm</b>.</div>
     </div>
   </div>
@@ -236,7 +239,7 @@
     <div class="body">
       <div class="step"><b>Bước làm:</b> <span class="scr">Bán hàng</span> → Lập chứng từ bán hàng. Đơn giá bán 40.000/kg, VAT 10%.<br><b>Giá vốn ghi TỰ ĐỘNG.</b></div>
       <table class="dk"><tr><th>Định khoản — (a) Doanh thu</th><th class="r">Số tiền</th></tr>
-        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">44.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH (Vietcombank)</td><td class="r">44.000.000</td></tr>
         <tr><td><span class="tkco">Có 5111</span> — Doanh thu (1.000 × 40.000)</td><td class="r">40.000.000</td></tr>
         <tr><td><span class="tkco">Có 33311</span> — Thuế GTGT đầu ra (10%)</td><td class="r">4.000.000</td></tr></table>
       <table class="dk" style="margin-top:8px"><tr><th>(b) Giá vốn (tự động)</th><th class="r">Số tiền</th></tr>
@@ -262,7 +265,7 @@
     <div class="body">
       <div class="step"><b>Bước làm:</b> <span class="scr">Bán hàng</span> → chọn mặt hàng là <b>dịch vụ</b>. VAT 10%.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
-        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">5.500.000</td></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH (Vietcombank)</td><td class="r">5.500.000</td></tr>
         <tr><td><span class="tkco">Có 5113</span> — Doanh thu dịch vụ</td><td class="r">5.000.000</td></tr>
         <tr><td><span class="tkco">Có 33311</span> — Thuế GTGT đầu ra</td><td class="r">500.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> dịch vụ <b>không qua kho</b> → <b>không có giá vốn 632</b>. Chỉ ghi doanh thu + thuế.</div>
@@ -292,7 +295,7 @@
         <tr><td><span class="tkco">Có 334</span> — Phải trả người lao động</td><td class="r">10.000.000</td></tr></table>
       <table class="dk" style="margin-top:8px"><tr><th>(b) Chi trả qua NH</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 334</span> — Phải trả người lao động</td><td class="r">10.000.000</td></tr>
-        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">10.000.000</td></tr></table>
+        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH (Vietcombank)</td><td class="r">10.000.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> (a) ghi nhận chi phí lương + khoản phải trả NLĐ; (b) khi trả, <b>334 về 0</b>. <span class="pill">Ví dụ đơn giản hóa</span> thực tế còn trích BHXH (10,5% trừ lương + 23,5% DN chịu) và khấu trừ thuế TNCN — phần mềm tự tính ở Bảng lương.</div>
     </div>
   </div>
@@ -366,7 +369,7 @@
     <div>
       <table class="grid">
         <tr><th>TÀI SẢN</th><th class="r">Số dư cuối kỳ</th></tr>
-        <tr><td>Tiền gửi ngân hàng (112)</td><td class="r">157.500.000</td></tr>
+        <tr><td>Tiền gửi NH — Vietcombank (112)</td><td class="r">157.500.000</td></tr>
         <tr><td>Hàng tồn kho (156)</td><td class="r">0</td></tr>
         <tr><td>Thuế GTGT được khấu trừ (1331)</td><td class="r">0</td></tr>
         <tr><td>TSCĐ nguyên giá (2113)</td><td class="r">360.000.000</td></tr>
