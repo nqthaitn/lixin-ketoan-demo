@@ -161,18 +161,21 @@
   <div class="legend">
     <div><code>111</code> Tiền mặt &nbsp;·&nbsp; <code>112</code> Tiền gửi ngân hàng</div>
     <div><code>131</code> Phải thu khách hàng &nbsp;·&nbsp; <code>331</code> Phải trả người bán</div>
-    <div><code>133</code> Thuế GTGT được khấu trừ (đầu vào)</div>
+    <div><code>1331</code> Thuế GTGT được khấu trừ (đầu vào)</div>
     <div><code>156</code> Hàng hóa (tồn kho)</div>
-    <div><code>211</code> Tài sản cố định &nbsp;·&nbsp; <code>214</code> Hao mòn lũy kế</div>
+    <div><code>2113</code> TSCĐ hữu hình — phương tiện vận tải &nbsp;·&nbsp; <code>2141</code> Hao mòn lũy kế</div>
     <div><code>334</code> Phải trả người lao động</div>
-    <div><code>3331</code> Thuế GTGT phải nộp (đầu ra)</div>
+    <div><code>33311</code> Thuế GTGT phải nộp (đầu ra)</div>
     <div><code>3334</code> Thuế TNDN &nbsp;·&nbsp; <code>3339</code> Lệ phí (môn bài)</div>
-    <div><code>4111</code> Vốn góp &nbsp;·&nbsp; <code>4212</code> Lợi nhuận chưa phân phối</div>
-    <div><code>511</code> Doanh thu bán hàng &nbsp;·&nbsp; <code>5113</code> Doanh thu dịch vụ</div>
+    <div><code>41111</code> Vốn góp &nbsp;·&nbsp; <code>4212</code> Lợi nhuận chưa phân phối</div>
+    <div><code>5111</code> Doanh thu bán hàng &nbsp;·&nbsp; <code>5113</code> Doanh thu dịch vụ</div>
     <div><code>632</code> Giá vốn hàng bán</div>
     <div><code>6421</code> CP nhân viên · <code>6424</code> CP khấu hao · <code>6425</code> Thuế, phí · <code>6427</code> CP dịch vụ mua ngoài</div>
-    <div><code>8211</code> CP thuế TNDN &nbsp;·&nbsp; <code>911</code> Xác định kết quả kinh doanh</div>
+    <div><code>82111</code> CP thuế TNDN &nbsp;·&nbsp; <code>911</code> Xác định kết quả kinh doanh</div>
   </div>
+  <div class="note">⚠️ <b>Chỉ hạch toán vào TK lá</b> (mã chi tiết nhất, có thể ghi sổ — IsPostable), <b>KHÔNG ghi vào TK cha/tổng hợp</b>.
+    Ví dụ: dùng <code>5111</code> chứ không dùng <code>511</code>; <code>33311</code> chứ không <code>3331</code>; <code>2113</code> chứ không <code>211</code>;
+    <code>1331</code> chứ không <code>133</code>. TK cha chỉ để cộng dồn lên báo cáo. Phần mềm sẽ chặn nếu ghi vào TK cha.</div>
   <div class="note">Thuế suất GTGT trong ví dụ dùng <b>10%</b> cho dễ tính (thực tế tùy mặt hàng: 0% / 5% / 8% / 10%).</div>
 
   <h2 class="sec" id="nv"><span class="n">②</span> 11 nghiệp vụ trong kỳ (tháng 6)</h2>
@@ -185,8 +188,8 @@
       <div class="step"><b>Bước làm:</b> Tổng hợp → <span class="scr">Chứng từ nghiệp vụ khác</span>.<br>Chứng từ: Giấy báo Có ngân hàng.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">500.000.000</td></tr>
-        <tr><td><span class="tkco">Có 4111</span> — Vốn góp</td><td class="r">500.000.000</td></tr></table>
-      <div class="why"><b>Vì sao:</b> tiền vào ngân hàng → tài sản <b>112 tăng</b> (ghi Nợ); nguồn hình thành là vốn chủ → <b>4111 tăng</b> (ghi Có).</div>
+        <tr><td><span class="tkco">Có 41111</span> — Vốn góp</td><td class="r">500.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> tiền vào ngân hàng → tài sản <b>112 tăng</b> (ghi Nợ); nguồn hình thành là vốn chủ → <b>41111 tăng</b> (ghi Có).</div>
     </div>
   </div>
 
@@ -196,9 +199,9 @@
     <div class="body">
       <div class="step"><b>Bước làm:</b> <span class="scr">Tài sản cố định</span> → Ghi tăng (kèm bút toán mua).<br>Khai báo: nguyên giá 360tr, khấu hao 60 tháng.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
-        <tr><td><span class="tkno">Nợ 211</span> — TSCĐ (nguyên giá)</td><td class="r">360.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 2113</span> — TSCĐ (nguyên giá)</td><td class="r">360.000.000</td></tr>
         <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">360.000.000</td></tr></table>
-      <div class="why"><b>Vì sao:</b> đổi tiền lấy tài sản dài hạn — <b>211 tăng</b>, <b>112 giảm</b>. Xe sẽ được <b>khấu hao dần</b> vào chi phí mỗi tháng (xem nghiệp vụ 9).</div>
+      <div class="why"><b>Vì sao:</b> đổi tiền lấy tài sản dài hạn — <b>2113 tăng</b>, <b>112 giảm</b>. Xe sẽ được <b>khấu hao dần</b> vào chi phí mỗi tháng (xem nghiệp vụ 9).</div>
     </div>
   </div>
 
@@ -209,9 +212,9 @@
       <div class="step"><b>Bước làm:</b> <span class="scr">Mua hàng</span> → Lập chứng từ mua hàng (chọn "Chưa trả tiền").<br>Đơn giá 20.000/kg, VAT 10%.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 156</span> — Hàng hóa (1.000 × 20.000)</td><td class="r">20.000.000</td></tr>
-        <tr><td><span class="tkno">Nợ 133</span> — Thuế GTGT đầu vào (10%)</td><td class="r">2.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 1331</span> — Thuế GTGT đầu vào (10%)</td><td class="r">2.000.000</td></tr>
         <tr><td><span class="tkco">Có 331</span> — Phải trả người bán</td><td class="r">22.000.000</td></tr></table>
-      <div class="why"><b>Vì sao:</b> hàng vào kho → <b>156 tăng 20tr</b>; thuế đầu vào được khấu trừ sau → <b>133 tăng 2tr</b>; chưa trả tiền → nợ NCC <b>331 tăng 22tr</b>. <b>Tồn kho: 1.000 kg, giá vốn 20.000/kg.</b></div>
+      <div class="why"><b>Vì sao:</b> hàng vào kho → <b>156 tăng 20tr</b>; thuế đầu vào được khấu trừ sau → <b>1331 tăng 2tr</b>; chưa trả tiền → nợ NCC <b>331 tăng 22tr</b>. <b>Tồn kho: 1.000 kg, giá vốn 20.000/kg.</b></div>
     </div>
   </div>
 
@@ -234,8 +237,8 @@
       <div class="step"><b>Bước làm:</b> <span class="scr">Bán hàng</span> → Lập chứng từ bán hàng. Đơn giá bán 40.000/kg, VAT 10%.<br><b>Giá vốn ghi TỰ ĐỘNG.</b></div>
       <table class="dk"><tr><th>Định khoản — (a) Doanh thu</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">44.000.000</td></tr>
-        <tr><td><span class="tkco">Có 511</span> — Doanh thu (1.000 × 40.000)</td><td class="r">40.000.000</td></tr>
-        <tr><td><span class="tkco">Có 3331</span> — Thuế GTGT đầu ra (10%)</td><td class="r">4.000.000</td></tr></table>
+        <tr><td><span class="tkco">Có 5111</span> — Doanh thu (1.000 × 40.000)</td><td class="r">40.000.000</td></tr>
+        <tr><td><span class="tkco">Có 33311</span> — Thuế GTGT đầu ra (10%)</td><td class="r">4.000.000</td></tr></table>
       <table class="dk" style="margin-top:8px"><tr><th>(b) Giá vốn (tự động)</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 632</span> — Giá vốn hàng bán</td><td class="r">20.000.000</td></tr>
         <tr><td><span class="tkco">Có 156</span> — Hàng hóa (1.000 × 20.000)</td><td class="r">20.000.000</td></tr></table>
@@ -244,8 +247,8 @@
         <div class="cap">🔎 Nhìn qua <b>"sổ chữ T"</b> — mỗi tài khoản là một chữ T: bên trái ghi <span class="tkno">Nợ</span>, bên phải ghi <span class="tkco">Có</span>. Cộng tất cả cột Nợ = cộng tất cả cột Có = <b>64.000.000</b>.</div>
         <div class="trow">
           <div class="tacc"><div class="tn">112 — Tiền gửi</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l on">44.000.000</div><div class="r"></div></div></div>
-          <div class="tacc"><div class="tn">511 — Doanh thu</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">40.000.000</div></div></div>
-          <div class="tacc"><div class="tn">3331 — Thuế đầu ra</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">4.000.000</div></div></div>
+          <div class="tacc"><div class="tn">5111 — Doanh thu</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">40.000.000</div></div></div>
+          <div class="tacc"><div class="tn">33311 — Thuế đầu ra</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">4.000.000</div></div></div>
           <div class="tacc"><div class="tn">632 — Giá vốn</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l on">20.000.000</div><div class="r"></div></div></div>
           <div class="tacc"><div class="tn">156 — Hàng hóa</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">20.000.000</div></div></div>
         </div>
@@ -261,7 +264,7 @@
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">5.500.000</td></tr>
         <tr><td><span class="tkco">Có 5113</span> — Doanh thu dịch vụ</td><td class="r">5.000.000</td></tr>
-        <tr><td><span class="tkco">Có 3331</span> — Thuế GTGT đầu ra</td><td class="r">500.000</td></tr></table>
+        <tr><td><span class="tkco">Có 33311</span> — Thuế GTGT đầu ra</td><td class="r">500.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> dịch vụ <b>không qua kho</b> → <b>không có giá vốn 632</b>. Chỉ ghi doanh thu + thuế.</div>
     </div>
   </div>
@@ -273,7 +276,7 @@
       <div class="step"><b>Bước làm:</b> <span class="scr">Mua hàng</span> → mặt hàng dịch vụ (không qua kho), "Chưa trả tiền".</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 6427</span> — CP dịch vụ mua ngoài</td><td class="r">3.000.000</td></tr>
-        <tr><td><span class="tkno">Nợ 133</span> — Thuế GTGT đầu vào</td><td class="r">300.000</td></tr>
+        <tr><td><span class="tkno">Nợ 1331</span> — Thuế GTGT đầu vào</td><td class="r">300.000</td></tr>
         <tr><td><span class="tkco">Có 331</span> — Phải trả người bán</td><td class="r">3.300.000</td></tr></table>
       <div class="why"><b>Vì sao:</b> dịch vụ phục vụ quản lý → vào thẳng <b>chi phí 6427</b> (không qua kho 156).</div>
     </div>
@@ -301,8 +304,8 @@
       <div class="step"><b>Bước làm:</b> <span class="scr">Tài sản cố định</span> → Tính khấu hao kỳ.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
         <tr><td><span class="tkno">Nợ 6424</span> — CP khấu hao TSCĐ</td><td class="r">6.000.000</td></tr>
-        <tr><td><span class="tkco">Có 214</span> — Hao mòn lũy kế</td><td class="r">6.000.000</td></tr></table>
-      <div class="why"><b>Vì sao:</b> xe dùng dần → mỗi tháng "mòn" 6tr tính vào <b>chi phí 6424</b>; nguyên giá 211 giữ nguyên, phần đã mòn gom ở <b>214</b>. Giá trị còn lại = 360 − 6 = <b>354tr</b>.</div>
+        <tr><td><span class="tkco">Có 2141</span> — Hao mòn lũy kế</td><td class="r">6.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> xe dùng dần → mỗi tháng "mòn" 6tr tính vào <b>chi phí 6424</b>; nguyên giá 2113 giữ nguyên, phần đã mòn gom ở <b>2141</b>. Giá trị còn lại = 360 − 6 = <b>354tr</b>.</div>
     </div>
   </div>
 
@@ -324,9 +327,9 @@
     <div class="body">
       <div class="step"><b>Bước làm:</b> <span class="scr">Thuế</span> → Tờ khai GTGT (01/GTGT) → phần mềm tính &amp; sinh bút toán khấu trừ.</div>
       <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
-        <tr><td><span class="tkno">Nợ 3331</span> — GTGT đầu ra</td><td class="r">2.300.000</td></tr>
-        <tr><td><span class="tkco">Có 133</span> — GTGT đầu vào</td><td class="r">2.300.000</td></tr></table>
-      <div class="why"><b>Vì sao:</b> đầu ra phải nộp = 4tr + 0,5tr = <b>4,5tr</b>; đầu vào được khấu trừ = 2tr + 0,3tr = <b>2,3tr</b>. Bù trừ: <b>133 về 0</b>, còn <b>3331 phải nộp = 4,5 − 2,3 = 2,2tr</b>.</div>
+        <tr><td><span class="tkno">Nợ 33311</span> — GTGT đầu ra</td><td class="r">2.300.000</td></tr>
+        <tr><td><span class="tkco">Có 1331</span> — GTGT đầu vào</td><td class="r">2.300.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> đầu ra phải nộp = 4tr + 0,5tr = <b>4,5tr</b>; đầu vào được khấu trừ = 2tr + 0,3tr = <b>2,3tr</b>. Bù trừ: <b>1331 về 0</b>, còn <b>33311 phải nộp = 4,5 − 2,3 = 2,2tr</b>.</div>
     </div>
   </div>
 
@@ -335,10 +338,10 @@
   Bước làm: <span class="scr">Tổng hợp → Kết chuyển lãi lỗ</span> (phần mềm tự sinh).</p>
   <table class="grid">
     <tr><th>Bút toán kết chuyển</th><th class="r">Nợ</th><th class="r">Có</th></tr>
-    <tr><td>K/c doanh thu: <span class="tkno">Nợ 511</span> 40tr + <span class="tkno">Nợ 5113</span> 5tr → <span class="tkco">Có 911</span></td><td class="r">45.000.000</td><td class="r">45.000.000</td></tr>
+    <tr><td>K/c doanh thu: <span class="tkno">Nợ 5111</span> 40tr + <span class="tkno">Nợ 5113</span> 5tr → <span class="tkco">Có 911</span></td><td class="r">45.000.000</td><td class="r">45.000.000</td></tr>
     <tr><td>K/c giá vốn: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 632</span></td><td class="r">20.000.000</td><td class="r">20.000.000</td></tr>
     <tr><td>K/c chi phí QLDN: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 6421/6424/6425/6427</span> (10+6+2+3)</td><td class="r">21.000.000</td><td class="r">21.000.000</td></tr>
-    <tr><td>Thuế TNDN 20% × 4tr: <span class="tkno">Nợ 8211</span> → <span class="tkco">Có 3334</span> ; rồi <span class="tkno">Nợ 911</span> → <span class="tkco">Có 8211</span></td><td class="r">800.000</td><td class="r">800.000</td></tr>
+    <tr><td>Thuế TNDN 20% × 4tr: <span class="tkno">Nợ 82111</span> → <span class="tkco">Có 3334</span> ; rồi <span class="tkno">Nợ 911</span> → <span class="tkco">Có 82111</span></td><td class="r">800.000</td><td class="r">800.000</td></tr>
     <tr class="tot"><td>K/c lãi sau thuế: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 4212</span></td><td class="r">3.200.000</td><td class="r">3.200.000</td></tr>
   </table>
   <div class="note">911 sau khi gom: Có 45tr − Nợ (20+21) = <b>lãi trước thuế 4tr</b>; trừ thuế TNDN 0,8tr → <b>lãi sau thuế 3,2tr</b> chuyển vào 4212.</div>
@@ -347,7 +350,7 @@
   <p class="lead">Lấy số phát sinh doanh thu &amp; chi phí trong kỳ. Bước làm: <span class="scr">Báo cáo → Báo cáo tài chính → B02</span>.</p>
   <table class="grid">
     <tr><th>Chỉ tiêu</th><th class="r">Số tiền</th></tr>
-    <tr><td>1. Doanh thu bán hàng &amp; cung cấp dịch vụ (511 + 5113)</td><td class="r">45.000.000</td></tr>
+    <tr><td>1. Doanh thu bán hàng &amp; cung cấp dịch vụ (5111 + 5113)</td><td class="r">45.000.000</td></tr>
     <tr><td>2. Giá vốn hàng bán (632)</td><td class="r">20.000.000</td></tr>
     <tr><td><b>3. Lợi nhuận gộp</b> (1 − 2)</td><td class="r">25.000.000</td></tr>
     <tr><td>4. Chi phí quản lý kinh doanh (6421+6424+6425+6427)</td><td class="r">21.000.000</td></tr>
@@ -365,9 +368,9 @@
         <tr><th>TÀI SẢN</th><th class="r">Số dư cuối kỳ</th></tr>
         <tr><td>Tiền gửi ngân hàng (112)</td><td class="r">157.500.000</td></tr>
         <tr><td>Hàng tồn kho (156)</td><td class="r">0</td></tr>
-        <tr><td>Thuế GTGT được khấu trừ (133)</td><td class="r">0</td></tr>
-        <tr><td>TSCĐ nguyên giá (211)</td><td class="r">360.000.000</td></tr>
-        <tr><td>Hao mòn lũy kế (214)</td><td class="r">(6.000.000)</td></tr>
+        <tr><td>Thuế GTGT được khấu trừ (1331)</td><td class="r">0</td></tr>
+        <tr><td>TSCĐ nguyên giá (2113)</td><td class="r">360.000.000</td></tr>
+        <tr><td>Hao mòn lũy kế (2141)</td><td class="r">(6.000.000)</td></tr>
         <tr class="tot bal"><td>TỔNG TÀI SẢN</td><td class="r">511.500.000</td></tr>
       </table>
     </div>
@@ -375,10 +378,10 @@
       <table class="grid">
         <tr><th>NGUỒN VỐN</th><th class="r">Số dư cuối kỳ</th></tr>
         <tr><td>Phải trả người bán (331)</td><td class="r">3.300.000</td></tr>
-        <tr><td>Thuế GTGT phải nộp (3331)</td><td class="r">2.200.000</td></tr>
+        <tr><td>Thuế GTGT phải nộp (33311)</td><td class="r">2.200.000</td></tr>
         <tr><td>Thuế TNDN phải nộp (3334)</td><td class="r">800.000</td></tr>
         <tr><td>Phí, lệ phí phải nộp (3339)</td><td class="r">2.000.000</td></tr>
-        <tr><td>Vốn góp chủ sở hữu (4111)</td><td class="r">500.000.000</td></tr>
+        <tr><td>Vốn góp chủ sở hữu (41111)</td><td class="r">500.000.000</td></tr>
         <tr><td>Lợi nhuận sau thuế chưa PP (4212)</td><td class="r">3.200.000</td></tr>
         <tr class="tot bal"><td>TỔNG NGUỒN VỐN</td><td class="r">511.500.000</td></tr>
       </table>
@@ -440,7 +443,7 @@
         <tr><td>&nbsp;&nbsp;<b>Giá trị còn lại</b></td><td class="r">354.000.000</td></tr>
         <tr><td>Hàng tồn kho cuối kỳ (gạo)</td><td class="r">0</td></tr>
         <tr><td>Phải trả người bán còn lại (331)</td><td class="r">3.300.000</td></tr>
-        <tr><td>Thuế &amp; phải nộp Nhà nước (3331+3334+3339)</td><td class="r">5.000.000</td></tr></table>
+        <tr><td>Thuế &amp; phải nộp Nhà nước (33311+3334+3339)</td><td class="r">5.000.000</td></tr></table>
     </div></div>
 
   <h2 class="sec" id="phu"><span class="n">⑧</span> Sổ phụ — Kho &amp; Công nợ</h2>
