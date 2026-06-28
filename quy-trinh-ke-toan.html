@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quy trình kế toán A→Z — học định khoản tới báo cáo | Lixin Hub</title>
+<style>
+  :root{
+    --bg:#0f1620; --panel:#172230; --line:#2a3a4d; --txt:#e7eef7; --mut:#9fb3c8;
+    --no:#1f6feb; --co:#e8590c; --ok:#2f9e44; --gold:#ffd43b; --pur:#c084fc;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55}
+  a{color:var(--no);text-decoration:none} a:hover{text-decoration:underline}
+  header{padding:30px 22px 22px;background:linear-gradient(120deg,#11233b,#0f1620);border-bottom:1px solid var(--line)}
+  .hwrap,.wrap{max-width:1080px;margin:0 auto}
+  header h1{margin:0;font-size:25px} header p{margin:8px 0 0;color:var(--mut);font-size:14.5px;max-width:820px}
+  .wrap{padding:26px 22px 70px}
+  h2.sec{font-size:20px;margin:38px 0 6px;padding-top:10px;border-top:1px solid var(--line)}
+  h2.sec .n{color:var(--gold)}
+  .lead{color:var(--mut);font-size:14px;margin:0 0 18px;max-width:840px}
+  .principle{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:16px 20px;margin:18px 0}
+  .principle b{color:var(--gold)}
+  /* định khoản */
+  .jx{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0;margin:16px 0;overflow:hidden}
+  .jx .head{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+  .jx .num{background:var(--no);color:#fff;font-weight:700;border-radius:8px;min-width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .jx .ttl{font-weight:700;font-size:15.5px;flex:1;min-width:240px}
+  .jx .amt{color:var(--gold);font-weight:700;white-space:nowrap}
+  .jx .body{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:720px){.jx .body{grid-template-columns:1fr}}
+  .step{font-size:13.5px;color:var(--mut)}
+  .step b{color:var(--txt)} .step .scr{display:inline-block;background:#0e1825;border:1px solid var(--line);border-radius:6px;padding:1px 8px;color:var(--co);font-size:12.5px}
+  table.dk{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.dk th{text-align:left;color:var(--mut);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;padding:4px 8px;border-bottom:1px solid var(--line)}
+  table.dk td{padding:5px 8px;border-bottom:1px solid #20303f}
+  table.dk td.r{text-align:right;font-variant-numeric:tabular-nums}
+  .tkno{color:#5b9bff;font-weight:700} .tkco{color:#ff9a5b;font-weight:700}
+  .why{grid-column:1/-1;font-size:13px;color:var(--mut);background:#0e1825;border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin-top:2px}
+  .why b{color:var(--ok)}
+  .note{font-size:13px;color:var(--mut);background:#0e1825;border:1px dashed var(--line);border-radius:9px;padding:8px 12px;margin:6px 0}
+  /* bảng TK + báo cáo */
+  table.grid{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0 4px}
+  table.grid th{text-align:left;color:var(--mut);padding:7px 10px;border-bottom:2px solid var(--line);font-size:12px;text-transform:uppercase}
+  table.grid td{padding:6px 10px;border-bottom:1px solid #20303f;vertical-align:top}
+  table.grid td.r{text-align:right;font-variant-numeric:tabular-nums}
+  table.grid tr.tot td{font-weight:700;border-top:2px solid var(--line);background:#0e1825}
+  table.grid tr.tot.bal td{color:var(--ok)}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut);background:#0e1825;margin-left:6px}
+  .legend{columns:2;column-gap:26px} @media(max-width:680px){.legend{columns:1}}
+  .legend div{break-inside:avoid;font-size:13.5px;padding:3px 0}
+  .legend code{color:var(--gold);font-weight:700}
+  footer{max-width:1080px;margin:0 auto;padding:10px 22px 60px;color:var(--mut);font-size:12.5px}
+  /* ===== animations ===== */
+  #prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--no));z-index:60;box-shadow:0 0 8px rgba(31,111,235,.6)}
+  .jx{transition:transform .16s,border-color .16s,box-shadow .16s}
+  .jx:hover{transform:translateY(-3px);border-color:var(--no);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+  /* thanh cân bằng Tài sản / Nguồn vốn */
+  .balwrap{margin:20px 0 4px}
+  .balwrap .lbl{font-size:13px;color:var(--mut);display:flex;justify-content:space-between;margin:2px 2px}
+  .balwrap .lbl b{color:var(--txt)}
+  .bar{height:30px;border-radius:8px;background:#0e1825;border:1px solid var(--line);overflow:hidden;position:relative}
+  .bar > i{display:block;height:100%;width:0;border-radius:7px}
+  .bar.ts > i{background:linear-gradient(90deg,#1f6feb,#5b9bff)}
+  .bar.nv > i{background:linear-gradient(90deg,#e8590c,#ff9a5b)}
+  .bar > span{position:absolute;left:12px;top:0;line-height:30px;font-size:12.5px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);letter-spacing:.3px}
+  .scale{text-align:center;font-size:32px;margin:8px 0;display:inline-block;width:100%}
+  @media (prefers-reduced-motion: no-preference){
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.in{opacity:1;transform:none}
+    .flow .ar{animation:fpulse 1.6s ease-in-out infinite}
+    @keyframes fpulse{0%,100%{opacity:.45;transform:translateX(0)}50%{opacity:1;transform:translateX(4px)}}
+    .bar > i{transition:width 1.15s cubic-bezier(.34,1.2,.5,1)}
+    .bar.in > i{width:100%}
+    .scale.in{animation:tip 1.3s ease}
+    @keyframes tip{0%{transform:rotate(0)}20%{transform:rotate(-10deg)}45%{transform:rotate(8deg)}70%{transform:rotate(-3deg)}100%{transform:rotate(0)}}
+  }
+  @media (prefers-reduced-motion: reduce){ .bar > i{width:100%} }
+  /* ===== minh hoạ SVG ===== */
+  .cic{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:#0e1825;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--gold)}
+  .cic svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .jx .num{min-width:26px;height:26px;font-size:13px}
+  /* sổ chữ T */
+  .tbox{background:#0e1825;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:4px 0 2px}
+  .tbox .cap{font-size:13px;color:var(--mut);margin-bottom:12px}
+  .trow{display:flex;gap:14px;flex-wrap:wrap}
+  .tacc{flex:1;min-width:150px}
+  .tacc .tn{text-align:center;font-weight:700;font-size:13px;padding-bottom:5px;border-bottom:2px solid var(--mut);margin-bottom:0}
+  .tacc .tg{display:grid;grid-template-columns:1fr 1fr;min-height:40px}
+  .tacc .tg .l{border-right:2px solid var(--mut);text-align:center;padding:7px 4px;font-variant-numeric:tabular-nums}
+  .tacc .tg .r{text-align:center;padding:7px 4px;font-variant-numeric:tabular-nums}
+  .tacc .tg .l.on{color:#5b9bff;font-weight:700} .tacc .tg .r.on{color:#ff9a5b;font-weight:700}
+  .tacc .hd{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;padding:2px 4px 0}
+  /* dải vòng đời minh hoạ */
+  .cycle{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:8px 0 4px}
+  .cstep{flex:1;min-width:150px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;position:relative}
+  .cstep .ci{width:46px;height:46px;margin:0 auto 8px;border-radius:50%;background:#0e1825;border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--no)}
+  .cstep .ci svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .cstep h4{margin:0 0 3px;font-size:14px} .cstep p{margin:0;font-size:12px;color:var(--mut)}
+  .carr{display:flex;align-items:center;justify-content:center;color:var(--no);font-size:22px;padding:0 4px;flex:0 0 auto}
+  @media(max-width:760px){.carr{transform:rotate(90deg);padding:6px 0}.cstep{min-width:100%}}
+  @media (prefers-reduced-motion: no-preference){ .cstep .ci{transition:transform .2s} .cstep:hover .ci{transform:scale(1.12)} }
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+  .toc a{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:5px 13px;font-size:13px;color:var(--txt)}
+  .toc a:hover{border-color:var(--no);text-decoration:none}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="ic-bank" viewBox="0 0 24 24"><path d="M3 21h18M4 21V10l8-5 8 5v11M9 21v-6M12 21v-6M15 21v-6"/></symbol>
+  <symbol id="ic-car" viewBox="0 0 24 24"><path d="M3 14l2-6h14l2 6M3 14h18v4H3zM7 18v2M17 18v2"/><circle cx="7.5" cy="14" r="1.4"/><circle cx="16.5" cy="14" r="1.4"/></symbol>
+  <symbol id="ic-truck" viewBox="0 0 24 24"><path d="M2 6h12v9H2zM14 9h4l3 3v3h-7zM2 15h19"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></symbol>
+  <symbol id="ic-cashout" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M19 9v6"/><path d="M5 9v6"/></symbol>
+  <symbol id="ic-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/><path d="M6 12h.01M18 12h.01"/></symbol>
+  <symbol id="ic-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 21c0-3.6 3.4-5.6 7-5.6s7 2 7 5.6"/></symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4-9-4zM3 8v8l9 4 9-4V8M12 12v8"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 2h8l5 5v15H6zM14 2v5h5"/><path d="M9 13h7M9 17h7"/></symbol>
+  <symbol id="ic-percent" viewBox="0 0 24 24"><path d="M19 5L5 19"/><circle cx="7.5" cy="7.5" r="2.4"/><circle cx="16.5" cy="16.5" r="2.4"/></symbol>
+  <symbol id="ic-scale" viewBox="0 0 24 24"><path d="M12 3v18M6 21h12M5 6h14M5 6l-3 6a3.5 3.5 0 007 0zM19 6l-3 6a3.5 3.5 0 007 0z"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24"><path d="M4 4v16h16M8 16v-4M12 16V8M16 16v-7"/></symbol>
+  <symbol id="ic-ledger" viewBox="0 0 24 24"><path d="M5 3h13a1 1 0 011 1v16a1 1 0 01-1 1H5zM5 7h14M9 3v18"/></symbol>
+  <symbol id="ic-handshake" viewBox="0 0 24 24"><path d="M3 12l4-4 5 3 5-3 4 4M7 8v8M17 8v8M9 14l2 2 2-2"/></symbol>
+</defs></svg>
+<header>
+  <div class="hwrap">
+    <h1>📒 Quy trình kế toán A→Z — từ định khoản đến báo cáo tài chính</h1>
+    <p>Theo dấu trọn một kỳ kế toán của <b>công ty thương mại – dịch vụ</b> (kinh doanh gạo + dịch vụ vận chuyển):
+    mỗi nghiệp vụ <b>làm ở màn nào</b>, <b>vào tài khoản nào</b>, <b>định khoản Nợ/Có ra sao</b>, và cuối cùng các con số
+    <b>cuộn lên báo cáo</b> thế nào. Số làm tròn để dễ học; mọi con số <b>cân đối từng đồng</b> — chốt sổ ra
+    <b>Tổng tài sản = Nguồn vốn = 511.500.000&nbsp;đ</b>. Đây là phiên bản học của công ty mẫu
+    <b>TM-DV COVERAGE</b> trong phần mềm.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="principle">
+    🔑 <b>Nguyên lý định khoản kép</b> — mọi nghiệp vụ đều ghi vào <b>ít nhất 2 tài khoản</b>: một bên <span class="tkno">Nợ</span>,
+    một bên <span class="tkco">Có</span>, và <b>tổng Nợ luôn = tổng Có</b>. Nhờ vậy sổ sách luôn cân, và cuối kỳ
+    <b>Tài sản = Nợ phải trả + Vốn chủ sở hữu</b>. Quy ước: tài khoản <b>Tài sản/Chi phí</b> tăng ghi <span class="tkno">Nợ</span>;
+    <b>Nợ phải trả/Vốn/Doanh thu</b> tăng ghi <span class="tkco">Có</span>.
+  </div>
+
+  <div class="toc">
+    <a href="#tk">① Bảng tài khoản</a>
+    <a href="#nv">② 11 nghiệp vụ A→Z</a>
+    <a href="#kc">③ Kết chuyển cuối kỳ</a>
+    <a href="#b02">④ KQKD (B02)</a>
+    <a href="#b01">⑤ Cân đối kế toán (B01)</a>
+    <a href="#b03">⑥ Lưu chuyển tiền (B03)</a>
+    <a href="#b09">⑦ Thuyết minh (B09)</a>
+    <a href="#phu">⑧ Sổ kho &amp; công nợ</a>
+  </div>
+  <div class="note" style="margin-top:8px">📊 <b>Bộ báo cáo tài chính đầy đủ gồm 4 báo cáo:</b> B01 Cân đối kế toán · B02 Kết quả kinh doanh · B03 Lưu chuyển tiền tệ · B09 Thuyết minh. Trang này minh hoạ đủ cả 4.</div>
+
+  <h2 class="sec" id="tk"><span class="n">①</span> Bảng tài khoản dùng trong kỳ</h2>
+  <p class="lead">Tài khoản (TK) là "ngăn kéo" gom từng loại tài sản/nguồn vốn/thu chi. Hệ thống TK chuẩn theo Thông tư.</p>
+  <div class="legend">
+    <div><code>111</code> Tiền mặt &nbsp;·&nbsp; <code>112</code> Tiền gửi ngân hàng</div>
+    <div><code>131</code> Phải thu khách hàng &nbsp;·&nbsp; <code>331</code> Phải trả người bán</div>
+    <div><code>133</code> Thuế GTGT được khấu trừ (đầu vào)</div>
+    <div><code>156</code> Hàng hóa (tồn kho)</div>
+    <div><code>211</code> Tài sản cố định &nbsp;·&nbsp; <code>214</code> Hao mòn lũy kế</div>
+    <div><code>334</code> Phải trả người lao động</div>
+    <div><code>3331</code> Thuế GTGT phải nộp (đầu ra)</div>
+    <div><code>3334</code> Thuế TNDN &nbsp;·&nbsp; <code>3339</code> Lệ phí (môn bài)</div>
+    <div><code>4111</code> Vốn góp &nbsp;·&nbsp; <code>4212</code> Lợi nhuận chưa phân phối</div>
+    <div><code>511</code> Doanh thu bán hàng &nbsp;·&nbsp; <code>5113</code> Doanh thu dịch vụ</div>
+    <div><code>632</code> Giá vốn hàng bán</div>
+    <div><code>6421</code> CP nhân viên · <code>6424</code> CP khấu hao · <code>6425</code> Thuế, phí · <code>6427</code> CP dịch vụ mua ngoài</div>
+    <div><code>8211</code> CP thuế TNDN &nbsp;·&nbsp; <code>911</code> Xác định kết quả kinh doanh</div>
+  </div>
+  <div class="note">Thuế suất GTGT trong ví dụ dùng <b>10%</b> cho dễ tính (thực tế tùy mặt hàng: 0% / 5% / 8% / 10%).</div>
+
+  <h2 class="sec" id="nv"><span class="n">②</span> 11 nghiệp vụ trong kỳ (tháng 6)</h2>
+  <p class="lead">Mỗi thẻ: <b>làm ở màn hình nào</b> trong Lixin Hub → <b>định khoản</b> (TK Nợ / TK Có / số tiền) → <b>vì sao</b>.</p>
+
+  <!-- 1 -->
+  <div class="jx">
+    <div class="head"><span class="num">1</span><span class="ttl">Chủ góp vốn vào công ty bằng tiền gửi ngân hàng</span><span class="amt">500.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> Tổng hợp → <span class="scr">Chứng từ nghiệp vụ khác</span>.<br>Chứng từ: Giấy báo Có ngân hàng.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">500.000.000</td></tr>
+        <tr><td><span class="tkco">Có 4111</span> — Vốn góp</td><td class="r">500.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> tiền vào ngân hàng → tài sản <b>112 tăng</b> (ghi Nợ); nguồn hình thành là vốn chủ → <b>4111 tăng</b> (ghi Có).</div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="jx">
+    <div class="head"><span class="num">2</span><span class="ttl">Mua 1 xe tải giao hàng (tài sản cố định), trả qua ngân hàng</span><span class="amt">360.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Tài sản cố định</span> → Ghi tăng (kèm bút toán mua).<br>Khai báo: nguyên giá 360tr, khấu hao 60 tháng.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 211</span> — TSCĐ (nguyên giá)</td><td class="r">360.000.000</td></tr>
+        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">360.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> đổi tiền lấy tài sản dài hạn — <b>211 tăng</b>, <b>112 giảm</b>. Xe sẽ được <b>khấu hao dần</b> vào chi phí mỗi tháng (xem nghiệp vụ 9).</div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="jx">
+    <div class="head"><span class="num">3</span><span class="ttl">Mua 1.000 kg gạo nhập kho, chưa trả tiền (công nợ)</span><span class="amt">22.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Mua hàng</span> → Lập chứng từ mua hàng (chọn "Chưa trả tiền").<br>Đơn giá 20.000/kg, VAT 10%.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 156</span> — Hàng hóa (1.000 × 20.000)</td><td class="r">20.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 133</span> — Thuế GTGT đầu vào (10%)</td><td class="r">2.000.000</td></tr>
+        <tr><td><span class="tkco">Có 331</span> — Phải trả người bán</td><td class="r">22.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> hàng vào kho → <b>156 tăng 20tr</b>; thuế đầu vào được khấu trừ sau → <b>133 tăng 2tr</b>; chưa trả tiền → nợ NCC <b>331 tăng 22tr</b>. <b>Tồn kho: 1.000 kg, giá vốn 20.000/kg.</b></div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="jx">
+    <div class="head"><span class="num">4</span><span class="ttl">Trả hết nợ nhà cung cấp qua ngân hàng</span><span class="amt">22.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Tiền gửi</span> → Chi tiền → "Trả tiền theo hóa đơn" (chọn HĐ mua còn nợ).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 331</span> — Phải trả người bán</td><td class="r">22.000.000</td></tr>
+        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">22.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> trả nợ → <b>331 giảm về 0</b> (ghi Nợ), tiền ra khỏi ngân hàng → <b>112 giảm</b>.</div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="jx">
+    <div class="head"><span class="num">5</span><span class="ttl">Bán toàn bộ 1.000 kg gạo, thu tiền ngay qua ngân hàng</span><span class="amt">44.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Bán hàng</span> → Lập chứng từ bán hàng. Đơn giá bán 40.000/kg, VAT 10%.<br><b>Giá vốn ghi TỰ ĐỘNG.</b></div>
+      <table class="dk"><tr><th>Định khoản — (a) Doanh thu</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">44.000.000</td></tr>
+        <tr><td><span class="tkco">Có 511</span> — Doanh thu (1.000 × 40.000)</td><td class="r">40.000.000</td></tr>
+        <tr><td><span class="tkco">Có 3331</span> — Thuế GTGT đầu ra (10%)</td><td class="r">4.000.000</td></tr></table>
+      <table class="dk" style="margin-top:8px"><tr><th>(b) Giá vốn (tự động)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 632</span> — Giá vốn hàng bán</td><td class="r">20.000.000</td></tr>
+        <tr><td><span class="tkco">Có 156</span> — Hàng hóa (1.000 × 20.000)</td><td class="r">20.000.000</td></tr></table>
+      <div class="why"><b>Vì sao — đây là nghiệp vụ "2 bút toán" quan trọng nhất:</b> (a) ghi nhận <b>doanh thu 40tr</b> + thuế phải nộp; (b) đồng thời xuất kho ghi <b>giá vốn 20tr</b> (lấy theo đơn giá tồn). Phần mềm tự sinh bút toán (b). <b>Tồn kho còn 0. Lãi gộp lô này = 40 − 20 = 20tr.</b></div>
+      <div class="tbox" style="grid-column:1/-1">
+        <div class="cap">🔎 Nhìn qua <b>"sổ chữ T"</b> — mỗi tài khoản là một chữ T: bên trái ghi <span class="tkno">Nợ</span>, bên phải ghi <span class="tkco">Có</span>. Cộng tất cả cột Nợ = cộng tất cả cột Có = <b>64.000.000</b>.</div>
+        <div class="trow">
+          <div class="tacc"><div class="tn">112 — Tiền gửi</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l on">44.000.000</div><div class="r"></div></div></div>
+          <div class="tacc"><div class="tn">511 — Doanh thu</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">40.000.000</div></div></div>
+          <div class="tacc"><div class="tn">3331 — Thuế đầu ra</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">4.000.000</div></div></div>
+          <div class="tacc"><div class="tn">632 — Giá vốn</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l on">20.000.000</div><div class="r"></div></div></div>
+          <div class="tacc"><div class="tn">156 — Hàng hóa</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">20.000.000</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="jx">
+    <div class="head"><span class="num">6</span><span class="ttl">Bán dịch vụ vận chuyển, thu ngay qua ngân hàng</span><span class="amt">5.500.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Bán hàng</span> → chọn mặt hàng là <b>dịch vụ</b>. VAT 10%.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">5.500.000</td></tr>
+        <tr><td><span class="tkco">Có 5113</span> — Doanh thu dịch vụ</td><td class="r">5.000.000</td></tr>
+        <tr><td><span class="tkco">Có 3331</span> — Thuế GTGT đầu ra</td><td class="r">500.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> dịch vụ <b>không qua kho</b> → <b>không có giá vốn 632</b>. Chỉ ghi doanh thu + thuế.</div>
+    </div>
+  </div>
+
+  <!-- 7 -->
+  <div class="jx">
+    <div class="head"><span class="num">7</span><span class="ttl">Thuê kho bãi (dịch vụ mua ngoài), chưa trả tiền</span><span class="amt">3.300.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Mua hàng</span> → mặt hàng dịch vụ (không qua kho), "Chưa trả tiền".</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 6427</span> — CP dịch vụ mua ngoài</td><td class="r">3.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 133</span> — Thuế GTGT đầu vào</td><td class="r">300.000</td></tr>
+        <tr><td><span class="tkco">Có 331</span> — Phải trả người bán</td><td class="r">3.300.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> dịch vụ phục vụ quản lý → vào thẳng <b>chi phí 6427</b> (không qua kho 156).</div>
+    </div>
+  </div>
+
+  <!-- 8 -->
+  <div class="jx">
+    <div class="head"><span class="num">8</span><span class="ttl">Tính &amp; chi trả lương nhân viên quản lý</span><span class="amt">10.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Tiền lương</span> → Bảng lương → Ghi sổ → Chi trả.</div>
+      <table class="dk"><tr><th>(a) Tính lương</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 6421</span> — CP nhân viên quản lý</td><td class="r">10.000.000</td></tr>
+        <tr><td><span class="tkco">Có 334</span> — Phải trả người lao động</td><td class="r">10.000.000</td></tr></table>
+      <table class="dk" style="margin-top:8px"><tr><th>(b) Chi trả qua NH</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 334</span> — Phải trả người lao động</td><td class="r">10.000.000</td></tr>
+        <tr><td><span class="tkco">Có 112</span> — Tiền gửi NH</td><td class="r">10.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> (a) ghi nhận chi phí lương + khoản phải trả NLĐ; (b) khi trả, <b>334 về 0</b>. <span class="pill">Ví dụ đơn giản hóa</span> thực tế còn trích BHXH (10,5% trừ lương + 23,5% DN chịu) và khấu trừ thuế TNCN — phần mềm tự tính ở Bảng lương.</div>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="jx">
+    <div class="head"><span class="num">9</span><span class="ttl">Trích khấu hao xe tải tháng này (360tr ÷ 60 tháng)</span><span class="amt">6.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Tài sản cố định</span> → Tính khấu hao kỳ.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 6424</span> — CP khấu hao TSCĐ</td><td class="r">6.000.000</td></tr>
+        <tr><td><span class="tkco">Có 214</span> — Hao mòn lũy kế</td><td class="r">6.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> xe dùng dần → mỗi tháng "mòn" 6tr tính vào <b>chi phí 6424</b>; nguyên giá 211 giữ nguyên, phần đã mòn gom ở <b>214</b>. Giá trị còn lại = 360 − 6 = <b>354tr</b>.</div>
+    </div>
+  </div>
+
+  <!-- 10 -->
+  <div class="jx">
+    <div class="head"><span class="num">10</span><span class="ttl">Lệ phí môn bài năm 2026</span><span class="amt">2.000.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Thuế</span> → Lệ phí môn bài.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 6425</span> — Thuế, phí, lệ phí</td><td class="r">2.000.000</td></tr>
+        <tr><td><span class="tkco">Có 3339</span> — Phí, lệ phí phải nộp</td><td class="r">2.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> ghi nhận chi phí môn bài + khoản phải nộp Nhà nước (sẽ nộp sau qua phiếu chi).</div>
+    </div>
+  </div>
+
+  <!-- 11 -->
+  <div class="jx">
+    <div class="head"><span class="num">11</span><span class="ttl">Khấu trừ thuế GTGT cuối kỳ (đầu ra − đầu vào)</span><span class="amt">2.300.000</span></div>
+    <div class="body">
+      <div class="step"><b>Bước làm:</b> <span class="scr">Thuế</span> → Tờ khai GTGT (01/GTGT) → phần mềm tính &amp; sinh bút toán khấu trừ.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 3331</span> — GTGT đầu ra</td><td class="r">2.300.000</td></tr>
+        <tr><td><span class="tkco">Có 133</span> — GTGT đầu vào</td><td class="r">2.300.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> đầu ra phải nộp = 4tr + 0,5tr = <b>4,5tr</b>; đầu vào được khấu trừ = 2tr + 0,3tr = <b>2,3tr</b>. Bù trừ: <b>133 về 0</b>, còn <b>3331 phải nộp = 4,5 − 2,3 = 2,2tr</b>.</div>
+    </div>
+  </div>
+
+  <h2 class="sec" id="kc"><span class="n">③</span> Kết chuyển cuối kỳ — xác định lãi/lỗ</h2>
+  <p class="lead">Cuối kỳ, "dồn" toàn bộ doanh thu &amp; chi phí về TK <b>911</b> để ra lợi nhuận, rồi chuyển lãi sang <b>4212</b>.
+  Bước làm: <span class="scr">Tổng hợp → Kết chuyển lãi lỗ</span> (phần mềm tự sinh).</p>
+  <table class="grid">
+    <tr><th>Bút toán kết chuyển</th><th class="r">Nợ</th><th class="r">Có</th></tr>
+    <tr><td>K/c doanh thu: <span class="tkno">Nợ 511</span> 40tr + <span class="tkno">Nợ 5113</span> 5tr → <span class="tkco">Có 911</span></td><td class="r">45.000.000</td><td class="r">45.000.000</td></tr>
+    <tr><td>K/c giá vốn: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 632</span></td><td class="r">20.000.000</td><td class="r">20.000.000</td></tr>
+    <tr><td>K/c chi phí QLDN: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 6421/6424/6425/6427</span> (10+6+2+3)</td><td class="r">21.000.000</td><td class="r">21.000.000</td></tr>
+    <tr><td>Thuế TNDN 20% × 4tr: <span class="tkno">Nợ 8211</span> → <span class="tkco">Có 3334</span> ; rồi <span class="tkno">Nợ 911</span> → <span class="tkco">Có 8211</span></td><td class="r">800.000</td><td class="r">800.000</td></tr>
+    <tr class="tot"><td>K/c lãi sau thuế: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 4212</span></td><td class="r">3.200.000</td><td class="r">3.200.000</td></tr>
+  </table>
+  <div class="note">911 sau khi gom: Có 45tr − Nợ (20+21) = <b>lãi trước thuế 4tr</b>; trừ thuế TNDN 0,8tr → <b>lãi sau thuế 3,2tr</b> chuyển vào 4212.</div>
+
+  <h2 class="sec" id="b02"><span class="n">④</span> Báo cáo Kết quả kinh doanh (B02-DN)</h2>
+  <p class="lead">Lấy số phát sinh doanh thu &amp; chi phí trong kỳ. Bước làm: <span class="scr">Báo cáo → Báo cáo tài chính → B02</span>.</p>
+  <table class="grid">
+    <tr><th>Chỉ tiêu</th><th class="r">Số tiền</th></tr>
+    <tr><td>1. Doanh thu bán hàng &amp; cung cấp dịch vụ (511 + 5113)</td><td class="r">45.000.000</td></tr>
+    <tr><td>2. Giá vốn hàng bán (632)</td><td class="r">20.000.000</td></tr>
+    <tr><td><b>3. Lợi nhuận gộp</b> (1 − 2)</td><td class="r">25.000.000</td></tr>
+    <tr><td>4. Chi phí quản lý kinh doanh (6421+6424+6425+6427)</td><td class="r">21.000.000</td></tr>
+    <tr><td><b>5. Lợi nhuận thuần trước thuế</b> (3 − 4)</td><td class="r">4.000.000</td></tr>
+    <tr><td>6. Chi phí thuế TNDN (20%)</td><td class="r">800.000</td></tr>
+    <tr class="tot bal"><td>7. LỢI NHUẬN SAU THUẾ (5 − 6)</td><td class="r">3.200.000</td></tr>
+  </table>
+
+  <h2 class="sec" id="b01"><span class="n">⑤</span> Bảng Cân đối kế toán (B01-DN) — chốt sổ</h2>
+  <p class="lead">Số dư cuối kỳ của từng TK. <b>Bất biến vàng: TỔNG TÀI SẢN = TỔNG NGUỒN VỐN.</b>
+  Bước làm: <span class="scr">Báo cáo → Báo cáo tài chính → B01</span>.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px" >
+    <div>
+      <table class="grid">
+        <tr><th>TÀI SẢN</th><th class="r">Số dư cuối kỳ</th></tr>
+        <tr><td>Tiền gửi ngân hàng (112)</td><td class="r">157.500.000</td></tr>
+        <tr><td>Hàng tồn kho (156)</td><td class="r">0</td></tr>
+        <tr><td>Thuế GTGT được khấu trừ (133)</td><td class="r">0</td></tr>
+        <tr><td>TSCĐ nguyên giá (211)</td><td class="r">360.000.000</td></tr>
+        <tr><td>Hao mòn lũy kế (214)</td><td class="r">(6.000.000)</td></tr>
+        <tr class="tot bal"><td>TỔNG TÀI SẢN</td><td class="r">511.500.000</td></tr>
+      </table>
+    </div>
+    <div>
+      <table class="grid">
+        <tr><th>NGUỒN VỐN</th><th class="r">Số dư cuối kỳ</th></tr>
+        <tr><td>Phải trả người bán (331)</td><td class="r">3.300.000</td></tr>
+        <tr><td>Thuế GTGT phải nộp (3331)</td><td class="r">2.200.000</td></tr>
+        <tr><td>Thuế TNDN phải nộp (3334)</td><td class="r">800.000</td></tr>
+        <tr><td>Phí, lệ phí phải nộp (3339)</td><td class="r">2.000.000</td></tr>
+        <tr><td>Vốn góp chủ sở hữu (4111)</td><td class="r">500.000.000</td></tr>
+        <tr><td>Lợi nhuận sau thuế chưa PP (4212)</td><td class="r">3.200.000</td></tr>
+        <tr class="tot bal"><td>TỔNG NGUỒN VỐN</td><td class="r">511.500.000</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="balwrap">
+    <div class="lbl"><span>Tổng <b>TÀI SẢN</b></span><span>511.500.000 đ</span></div>
+    <div class="bar ts"><i></i><span>TÀI SẢN</span></div>
+    <div class="scale">⚖️</div>
+    <div class="lbl"><span>Tổng <b>NGUỒN VỐN</b></span><span>511.500.000 đ</span></div>
+    <div class="bar nv"><i></i><span>NỢ PHẢI TRẢ + VỐN</span></div>
+  </div>
+
+  <div class="principle" style="border-left-color:var(--ok);margin-top:18px">
+    ✅ <b>Hai bên bằng nhau: 511.500.000 = 511.500.000.</b> Đây chính là phép kiểm "đúng từng đồng": vì mỗi nghiệp vụ
+    đều cân (Nợ = Có), nên cộng dồn cả kỳ thì <b>Tài sản luôn = Nguồn vốn</b>. Nếu lệch → có bút toán sai ở đâu đó.
+  </div>
+
+  <h2 class="sec" id="b03"><span class="n">⑥</span> Báo cáo Lưu chuyển tiền tệ (B03-DN)</h2>
+  <p class="lead">Tiền (112/111) đã "chảy" đi đâu trong kỳ, chia 3 dòng: <b>Kinh doanh · Đầu tư · Tài chính</b>.
+  Bước làm: <span class="scr">Báo cáo → Báo cáo tài chính → B03</span> (phương pháp trực tiếp).</p>
+  <table class="grid">
+    <tr><th>Chỉ tiêu</th><th class="r">Số tiền</th></tr>
+    <tr><td><b>I. Lưu chuyển tiền từ hoạt động KINH DOANH</b></td><td class="r"></td></tr>
+    <tr><td>&nbsp;&nbsp;+ Thu từ bán hàng &amp; cung cấp dịch vụ (nv 5, 6)</td><td class="r">+49.500.000</td></tr>
+    <tr><td>&nbsp;&nbsp;− Trả tiền người bán (nv 4)</td><td class="r">−22.000.000</td></tr>
+    <tr><td>&nbsp;&nbsp;− Trả lương người lao động (nv 8)</td><td class="r">−10.000.000</td></tr>
+    <tr class="tot"><td>&nbsp;&nbsp;<b>Lưu chuyển thuần từ HĐKD</b></td><td class="r">+17.500.000</td></tr>
+    <tr><td><b>II. Lưu chuyển tiền từ hoạt động ĐẦU TƯ</b></td><td class="r"></td></tr>
+    <tr><td>&nbsp;&nbsp;− Mua sắm TSCĐ — xe tải (nv 2)</td><td class="r">−360.000.000</td></tr>
+    <tr class="tot"><td>&nbsp;&nbsp;<b>Lưu chuyển thuần từ HĐĐT</b></td><td class="r">−360.000.000</td></tr>
+    <tr><td><b>III. Lưu chuyển tiền từ hoạt động TÀI CHÍNH</b></td><td class="r"></td></tr>
+    <tr><td>&nbsp;&nbsp;+ Nhận vốn góp của chủ sở hữu (nv 1)</td><td class="r">+500.000.000</td></tr>
+    <tr class="tot"><td>&nbsp;&nbsp;<b>Lưu chuyển thuần từ HĐTC</b></td><td class="r">+500.000.000</td></tr>
+    <tr><td>Lưu chuyển tiền thuần trong kỳ (I+II+III)</td><td class="r">+157.500.000</td></tr>
+    <tr><td>Tiền tồn đầu kỳ</td><td class="r">0</td></tr>
+    <tr class="tot bal"><td>TIỀN TỒN CUỐI KỲ</td><td class="r">157.500.000</td></tr>
+  </table>
+  <div class="principle" style="border-left-color:var(--no);margin-top:14px">
+    🔗 <b>Điểm chốt:</b> "Tiền tồn cuối kỳ" trên B03 = <b>157.500.000</b> đúng bằng số dư <b>TK 112</b> trên Bảng cân đối kế toán (B01).
+    Ba báo cáo <b>móc xích nhau từng đồng</b>: lãi của B02 → vốn chủ trên B01; tiền của B03 → tài sản tiền trên B01.
+  </div>
+
+  <h2 class="sec" id="b09"><span class="n">⑦</span> Thuyết minh báo cáo tài chính (B09-DN)</h2>
+  <p class="lead">Phần "chú thích" giải thích các con số: doanh nghiệp làm gì, áp dụng chính sách kế toán nào, và bóc tách chi tiết vài khoản mục.
+  Bước làm: <span class="scr">Báo cáo → Báo cáo tài chính → Thuyết minh</span>.</p>
+  <div class="jx"><div class="head"><span class="num" style="background:var(--pur)">I</span><span class="ttl">Đặc điểm hoạt động &amp; kỳ kế toán</span></div>
+    <div class="body" style="grid-template-columns:1fr"><div class="step">Công ty TNHH TM-DV — <b>thương mại gạo + dịch vụ vận chuyển</b>. Kỳ kế toán: tháng 6/2026. Đơn vị tiền: VND. Chế độ kế toán áp dụng: <b>Thông tư 99/2025/TT-BTC (TT200 trước đây)</b>.</div></div></div>
+  <div class="jx"><div class="head"><span class="num" style="background:var(--pur)">II</span><span class="ttl">Chính sách kế toán chủ yếu</span></div>
+    <div class="body" style="grid-template-columns:1fr"><div class="step">
+      • <b>Hàng tồn kho</b>: hạch toán theo phương pháp <b>kê khai thường xuyên</b>; giá xuất kho tính theo <b>bình quân gia quyền</b>.<br>
+      • <b>TSCĐ</b>: khấu hao theo <b>phương pháp đường thẳng</b> (xe tải: 60 tháng).<br>
+      • <b>Doanh thu</b>: ghi nhận khi chuyển giao hàng/hoàn thành dịch vụ. <b>Thuế GTGT</b>: phương pháp khấu trừ.</div></div></div>
+  <div class="jx"><div class="head"><span class="num" style="background:var(--pur)">III</span><span class="ttl">Bóc tách một số khoản mục (cuối kỳ)</span></div>
+    <div class="body" style="grid-template-columns:1fr">
+      <table class="dk"><tr><th>Chi tiết</th><th class="r">Giá trị</th></tr>
+        <tr><td>TSCĐ hữu hình — nguyên giá (xe tải)</td><td class="r">360.000.000</td></tr>
+        <tr><td>&nbsp;&nbsp;Hao mòn lũy kế</td><td class="r">(6.000.000)</td></tr>
+        <tr><td>&nbsp;&nbsp;<b>Giá trị còn lại</b></td><td class="r">354.000.000</td></tr>
+        <tr><td>Hàng tồn kho cuối kỳ (gạo)</td><td class="r">0</td></tr>
+        <tr><td>Phải trả người bán còn lại (331)</td><td class="r">3.300.000</td></tr>
+        <tr><td>Thuế &amp; phải nộp Nhà nước (3331+3334+3339)</td><td class="r">5.000.000</td></tr></table>
+    </div></div>
+
+  <h2 class="sec" id="phu"><span class="n">⑧</span> Sổ phụ — Kho &amp; Công nợ</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+    <div>
+      <table class="grid">
+        <tr><th>Sổ kho — Gạo (156)</th><th class="r">SL (kg)</th><th class="r">Giá trị</th></tr>
+        <tr><td>Nhập (nv 3)</td><td class="r">+1.000</td><td class="r">+20.000.000</td></tr>
+        <tr><td>Xuất bán (nv 5)</td><td class="r">−1.000</td><td class="r">−20.000.000</td></tr>
+        <tr class="tot"><td>Tồn cuối kỳ</td><td class="r">0</td><td class="r">0</td></tr>
+      </table>
+      <div class="note">Giá trị tồn kho (sổ kho) <b>luôn khớp số dư TK 156</b> trên sổ cái — đối chiếu từng đồng.</div>
+    </div>
+    <div>
+      <table class="grid">
+        <tr><th>Công nợ cuối kỳ</th><th class="r">Số dư</th></tr>
+        <tr><td>Phải thu KH (131)</td><td class="r">0</td></tr>
+        <tr><td>Phải trả NCC (331) — còn nợ tiền thuê kho</td><td class="r">3.300.000</td></tr>
+      </table>
+      <div class="note">Báo cáo <b>Tuổi nợ</b> (Báo cáo → Tuổi nợ) liệt kê từng hóa đơn còn nợ theo số ngày quá hạn.</div>
+    </div>
+  </div>
+
+  <h2 class="sec"><span class="n">🎓</span> Vòng đời 1 nghiệp vụ — từ chứng từ tới báo cáo</h2>
+  <div class="cycle">
+    <div class="cstep"><div class="ci"><svg><use href="#ic-doc"/></svg></div><h4>1. Chứng từ</h4><p>Hóa đơn, phiếu thu/chi — bằng chứng nghiệp vụ phát sinh</p></div>
+    <div class="carr">→</div>
+    <div class="cstep"><div class="ci"><svg><use href="#ic-scale"/></svg></div><h4>2. Định khoản</h4><p>Ghi <span class="tkno">Nợ</span> / <span class="tkco">Có</span> — luôn cân bằng</p></div>
+    <div class="carr">→</div>
+    <div class="cstep"><div class="ci"><svg><use href="#ic-ledger"/></svg></div><h4>3. Sổ cái</h4><p>Mỗi tài khoản gom phát sinh → ra số dư</p></div>
+    <div class="carr">→</div>
+    <div class="cstep"><div class="ci"><svg><use href="#ic-cash"/></svg></div><h4>4. Kết chuyển</h4><p>Doanh thu − chi phí → 911 → lãi/lỗ</p></div>
+    <div class="carr">→</div>
+    <div class="cstep"><div class="ci"><svg><use href="#ic-chart"/></svg></div><h4>5. Báo cáo</h4><p>4 báo cáo: B01 · B02 · B03 · B09</p></div>
+  </div>
+
+</div>
+
+<footer>
+  Phiên bản học của công ty mẫu <b>CÔNG TY TNHH TM-DV COVERAGE</b> trong Lixin Hub (mở app → Văn Phòng →
+  "Xem dữ liệu" công ty COVERAGE để xem số thật do phần mềm tính). Số trong trang này làm tròn cho dễ học;
+  nguyên tắc &amp; định khoản giữ chuẩn Thông tư. · Quay lại <a href="index.html">Trung tâm học</a>.
+</footer>
+
+<script>
+(function(){
+  var rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Thanh tiến độ đọc.
+  var prog = document.getElementById('prog'), de = document.documentElement;
+  addEventListener('scroll', function(){
+    prog.style.width = (de.scrollTop/((de.scrollHeight-de.clientHeight)||1)*100) + '%';
+  }, {passive:true});
+
+  // Gắn icon SVG cho từng thẻ nghiệp vụ (theo thứ tự 1..11).
+  var icons = ['bank','car','truck','cashout','cash','truck','box','person','car','doc','percent'];
+  document.querySelectorAll('.jx').forEach(function(jx, i){
+    var num = jx.querySelector('.head .num'); if(!num || !icons[i]) return;
+    var s = document.createElement('span'); s.className = 'cic';
+    s.innerHTML = '<svg><use href="#ic-' + icons[i] + '"/></svg>';
+    num.insertAdjacentElement('afterend', s);
+  });
+
+  // Gắn class reveal cho các khối lớn.
+  ['.jx','.principle','.legend','.grid','.balwrap','.toc'].forEach(function(sel){
+    document.querySelectorAll(sel).forEach(function(e){ e.classList.add('reveal'); });
+  });
+
+  // Chuẩn bị số để đếm tăng dần.
+  var fmt = function(n){ return n.toLocaleString('vi-VN'); };
+  document.querySelectorAll('.amt, .tot.bal td.r').forEach(function(el){
+    var v = parseInt(el.textContent.replace(/[^\d]/g,''), 10);
+    if(v){ el.dataset.v = v; el.textContent = rm ? fmt(v) : '0'; }
+  });
+  function countUp(el){
+    var target = parseInt(el.dataset.v,10); if(!target) return;
+    if(rm){ el.textContent = fmt(target); return; }
+    var dur = 900, t0 = performance.now();
+    (function step(t){
+      var p = Math.min(1,(t-t0)/dur), e = 1-Math.pow(1-p,3);
+      el.textContent = fmt(Math.round(target*e));
+      if(p<1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  var watch = document.querySelectorAll('.reveal, .amt, .tot.bal td.r, .bar, .scale');
+  if(rm || !('IntersectionObserver' in window)){
+    watch.forEach(function(t){ t.classList.add('in'); if(t.dataset && t.dataset.v) countUp(t); });
+    return;
+  }
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var el = en.target; el.classList.add('in');
+      if(el.dataset && el.dataset.v) countUp(el);
+      io.unobserve(el);
+    });
+  }, {threshold:.2, rootMargin:'0px 0px -6% 0px'});
+  watch.forEach(function(t){ io.observe(t); });
+})();
+</script>
+</body>
+</html>
