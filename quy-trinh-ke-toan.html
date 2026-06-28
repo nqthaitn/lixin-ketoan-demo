@@ -85,6 +85,15 @@
   .cstep h4{margin:0 0 3px;font-size:14px} .cstep p{margin:0;font-size:12px;color:var(--mut)}
   .carr{display:flex;align-items:center;justify-content:center;color:var(--no);font-size:22px;padding:0 4px}
   @media(max-width:760px){.carr{transform:rotate(90deg);padding:6px 0}.cstep{min-width:100%}}
+  /* sơ đồ cây phân loại hóa đơn mua */
+  .tree{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0}
+  .troot{text-align:center;background:#0e1825;border:1px solid var(--gold);border-radius:10px;padding:10px 14px;font-weight:700}
+  .troot small{display:block;color:var(--mut);font-weight:400;font-size:12px;margin-top:3px}
+  .tq{text-align:center;color:var(--gold);font-weight:600;margin:10px 0 4px;font-size:13.5px}
+  .tb{border-left:3px solid var(--no);background:#0e1825;border-radius:0 9px 9px 0;padding:9px 14px;margin:8px 0;font-size:13.5px}
+  .tb .tlabel{font-weight:700;color:var(--txt)}
+  .tacc{color:#5b9bff;font-weight:700;white-space:nowrap}
+  .tsub{margin-top:6px;padding-left:6px;display:grid;gap:4px;color:var(--mut);font-size:13px}
 </style>
 </head>
 <body>
@@ -146,6 +155,30 @@
   <div class="note">👥 <b>TK theo dõi chi tiết</b> (phần mềm bắt buộc nhập, nếu không sẽ chặn): <code>112</code> → <b>ngân hàng nào</b>
     (ví dụ này dùng <b>Vietcombank</b>); <code>131/331</code> → <b>khách hàng / NCC nào</b>; <code>156</code> → mặt hàng + kho;
     <code>2112</code> → từng tài sản (Sổ TSCĐ). Nhờ vậy mới lên được sổ chi tiết tiền gửi, công nợ, kho, TSCĐ.</div>
+
+  <h2 class="sec"><span class="n">🌳</span> Đọc 1 hóa đơn mua → định khoản vào TK nào?</h2>
+  <p class="lead">Mẹo của kế toán: <b>luôn đi từ hóa đơn</b>. Cùng một hóa đơn mua, nhưng <b>ghi Nợ vào TK khác nhau tùy mục đích</b>
+  (mua để làm gì) và <b>giá trị</b>. Nắm "sơ đồ cây" này là định khoản phần lớn nghiệp vụ mua được:</p>
+  <div class="tree">
+    <div class="troot">🧾 Hóa đơn mua hàng (đầu vào, thuế GTGT)
+      <small>Ghi tài sản theo <b>giá CHƯA thuế</b>; thuế GTGT → <span class="tacc">Nợ 1331</span> (được khấu trừ). Nếu không đủ điều kiện khấu trừ → cộng thuế vào giá trị tài sản.</small></div>
+    <div class="tq">▼ Mua cái gì? Mua về để làm gì? ▼</div>
+    <div class="tb"><span class="tlabel">① Mua để BÁN</span> → Hàng hóa → <span class="tacc">Nợ 156</span></div>
+    <div class="tb"><span class="tlabel">② Mua để SẢN XUẤT</span> (tạo nên thực thể thành phẩm: vải→quần áo, gỗ→bàn) → Nguyên vật liệu → <span class="tacc">Nợ 152</span></div>
+    <div class="tb"><span class="tlabel">③ Mua để DÙNG, giá trị &lt; 30 triệu</span> → Công cụ dụng cụ (CCDC)
+      <div class="tsub">
+        <div>↳ Nhập kho (chưa dùng) → <span class="tacc">Nợ 153</span></div>
+        <div>↳ Dùng ngay, <b>giá trị nhỏ</b> → tính thẳng chi phí bộ phận: <span class="tacc">Nợ 6421</span> (quản lý) / <span class="tacc">6411</span> (bán hàng) / <span class="tacc">6273</span> (sản xuất)</div>
+        <div>↳ Dùng ngay, <b>giá trị lớn</b> → đưa vào chờ phân bổ nhiều kỳ → <span class="tacc">Nợ 242</span></div>
+      </div></div>
+    <div class="tb"><span class="tlabel">④ Mua để DÙNG, giá trị ≥ 30 triệu</span> → Tài sản cố định (TSCĐ)
+      <div class="tsub">
+        <div>↳ Sẵn sàng dùng ngay → <span class="tacc">Nợ 2111</span> (TSCĐ hữu hình; TK con của nhóm 211 — vd 2112 máy móc, 2113 phương tiện)</div>
+        <div>↳ Chưa dùng được (cần lắp đặt / chạy thử / lắp ráp nhiều bộ phận) → <span class="tacc">Nợ 2411</span> (XDCB dở dang) → xong chuyển về <span class="tacc">2111</span></div>
+      </div></div>
+  </div>
+  <div class="note">⚠️ <b>Ghi vào TK lá:</b> 211 / 641 / 642 / 627 là <b>nhóm (TK cha)</b> — khi hạch toán phải vào TK con: <code>2111/2112/2113</code> · <code>6411</code> · <code>6421</code> · <code>6273</code>. (152 · 153 · 156 · 242 · 2411 đã là TK lá.)</div>
+  <div class="note">✅ <b>Kiểm chứng theo TT mới nhất (06/2026):</b> ngưỡng <b>30 triệu</b> tách CCDC↔TSCĐ theo <b>TT 45/2013/TT-BTC</b>, được sửa bởi <b>TT 30/2025/TT-BTC (hiệu lực 15/7/2025) nhưng KHÔNG đổi ngưỡng</b> (chỉ bổ sung giãn/hoãn khấu hao cho DN nhà nước đặc thù). Tin "30tr→10tr" là <b>SAI</b>. Hệ thống TK theo <b>TT 99/2025</b> (chế độ kế toán DN, thay TT200 từ 2026). Ngưỡng "nhỏ/lớn" để phân bổ CCDC <b>tùy quy mô DN</b> — ghi trong quy chế tài chính.</div>
 
   <h2 class="sec" id="nv"><span class="n">②</span> 11 nghiệp vụ trong kỳ (tháng 6) <span class="pill">VAT 10%</span></h2>
   <p class="lead">Mặt hàng: <b>Hàng hóa A</b> (mua 20.000/cái, bán 60.000/cái) + dịch vụ vận chuyển. Mỗi thẻ: <b>màn hình</b> → <b>định khoản</b> → <b>vì sao</b>.</p>
