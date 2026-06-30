@@ -1,0 +1,65 @@
+/* teaching.css — style dùng chung cho các trang học nghiệp vụ (nv-*.html).
+   Trích từ quy-trinh-ke-toan.html để DRY. Mọi trang nhóm link file này. */
+:root{
+  --bg:#0f1620; --panel:#172230; --line:#2a3a4d; --txt:#e7eef7; --mut:#9fb3c8;
+  --no:#1f6feb; --co:#e8590c; --ok:#2f9e44; --gold:#ffd43b; --pur:#c084fc;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55}
+a{color:var(--no);text-decoration:none} a:hover{text-decoration:underline}
+header{padding:30px 22px 22px;background:linear-gradient(120deg,#11233b,#0f1620);border-bottom:1px solid var(--line)}
+.hwrap,.wrap{max-width:1080px;margin:0 auto}
+header h1{margin:0;font-size:25px} header p{margin:8px 0 0;color:var(--mut);font-size:14.5px;max-width:840px}
+.crumb{margin:0 0 10px;font-size:13px;color:var(--mut)}
+.wrap{padding:26px 22px 70px}
+h2.sec{font-size:20px;margin:38px 0 6px;padding-top:10px;border-top:1px solid var(--line)}
+h2.sec .n{color:var(--gold)}
+.lead{color:var(--mut);font-size:14px;margin:0 0 18px;max-width:840px}
+.principle{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:16px 20px;margin:18px 0}
+.principle b{color:var(--gold)}
+.jx{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0;margin:16px 0;overflow:hidden;transition:transform .16s,border-color .16s,box-shadow .16s}
+.jx:hover{transform:translateY(-3px);border-color:var(--no);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.jx .head{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.jx .num{background:var(--no);color:#fff;font-weight:700;border-radius:8px;min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;padding:0 7px}
+.jx .ttl{font-weight:700;font-size:15.5px;flex:1;min-width:240px}
+.jx .amt{color:var(--gold);font-weight:700;white-space:nowrap}
+.jx .body{padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:720px){.jx .body{grid-template-columns:1fr}}
+.step{font-size:13.5px;color:var(--mut)}
+.step b{color:var(--txt)} .step .scr{display:inline-block;background:#0e1825;border:1px solid var(--line);border-radius:6px;padding:1px 8px;color:var(--co);font-size:12.5px}
+table.dk{width:100%;border-collapse:collapse;font-size:13.5px}
+table.dk th{text-align:left;color:var(--mut);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;padding:4px 8px;border-bottom:1px solid var(--line)}
+table.dk td{padding:5px 8px;border-bottom:1px solid #20303f}
+table.dk td.r{text-align:right;font-variant-numeric:tabular-nums}
+.tkno{color:#5b9bff;font-weight:700} .tkco{color:#ff9a5b;font-weight:700} .det{color:var(--mut);font-size:11.5px}
+.why{grid-column:1/-1;font-size:13px;color:var(--mut);background:#0e1825;border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin-top:2px}
+.why b{color:var(--ok)}
+.note{font-size:13px;color:var(--mut);background:#0e1825;border:1px dashed var(--line);border-radius:9px;padding:8px 12px;margin:6px 0}
+table.grid{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0 4px}
+table.grid th{text-align:left;color:var(--mut);padding:7px 10px;border-bottom:2px solid var(--line);font-size:12px;text-transform:uppercase}
+table.grid td{padding:6px 10px;border-bottom:1px solid #20303f;vertical-align:top}
+table.grid td.r{text-align:right;font-variant-numeric:tabular-nums}
+table.grid tr.tot td{font-weight:700;border-top:2px solid var(--line);background:#0e1825}
+table.grid tr.tot.bal td{color:var(--ok)}
+.pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--line);color:var(--mut);background:#0e1825;margin-left:6px}
+.legend{columns:2;column-gap:26px} @media(max-width:680px){.legend{columns:1}}
+.legend div{break-inside:avoid;font-size:13.5px;padding:3px 0} .legend code{color:var(--gold);font-weight:700} .legend i{color:var(--mut)}
+footer{max-width:1080px;margin:0 auto;padding:10px 22px 60px;color:var(--mut);font-size:12.5px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.toc a{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:5px 13px;font-size:13px;color:var(--txt)}
+.toc a:hover{border-color:var(--no);text-decoration:none}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--no));z-index:60;box-shadow:0 0 8px rgba(31,111,235,.6)}
+.tbox{background:#0e1825;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:4px 0 2px}
+.tbox .cap{font-size:13px;color:var(--mut);margin-bottom:12px}
+.trow{display:flex;gap:14px;flex-wrap:wrap} .tacc{flex:1;min-width:140px}
+.tacc .tn{text-align:center;font-weight:700;font-size:12.5px;padding-bottom:5px;border-bottom:2px solid var(--mut)}
+.tacc .hd{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);text-transform:uppercase;padding:2px 4px 0}
+.tacc .tg{display:grid;grid-template-columns:1fr 1fr;min-height:38px}
+.tacc .tg .l{border-right:2px solid var(--mut);text-align:center;padding:7px 4px;font-variant-numeric:tabular-nums}
+.tacc .tg .r{text-align:center;padding:7px 4px;font-variant-numeric:tabular-nums}
+.tacc .tg .l.on{color:#5b9bff;font-weight:700} .tacc .tg .r.on{color:#ff9a5b;font-weight:700}
+.src{font-size:12px;color:var(--mut);background:#0e1825;border:1px solid var(--line);border-radius:9px;padding:8px 12px;margin:14px 0}
+.src code{color:var(--gold)}
+@media (prefers-reduced-motion: no-preference){
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s} .reveal.in{opacity:1;transform:none}
+}

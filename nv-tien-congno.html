@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nghiệp vụ Tiền &amp; Công nợ — thu chi, bù trừ, đối trừ | Lixin Hub</title>
+<link rel="stylesheet" href="teaching.css">
+</head>
+<body>
+<div id="prog"></div>
+
+<header>
+  <div class="hwrap">
+    <p class="crumb"><a href="index.html">📚 Trung tâm học</a> › <a href="nv-mua-ban.html">Nghiệp vụ</a> › <b>Tiền &amp; Công nợ</b></p>
+    <h1>💵 Tiền mặt · 🏦 Ngân hàng · 🔁 Công nợ 131/331</h1>
+    <p>Quản lý dòng tiền (<b>111</b> quỹ, <b>112</b> ngân hàng — chi tiết từng TK) và công nợ
+    (<b>131</b> phải thu KH, <b>331</b> phải trả NCC — chi tiết từng đối tượng). Gồm thu/chi, chuyển nội bộ,
+    kiểm kê quỹ, vay, bù trừ &amp; đối trừ công nợ.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="src">📌 <b>Nguồn:</b> dump <code>CoverageSeeder</code>. Ngân hàng: <b>Vietcombank</b> (chính) &amp; <b>Techcombank</b>.</div>
+
+  <div class="toc">
+    <a href="#tien">① Thu / chi tiền</a><a href="#chuyen">② Chuyển nội bộ NH</a><a href="#kk">③ Kiểm kê quỹ</a>
+    <a href="#vay">④ Vay vốn</a><a href="#congno">⑤ Thu nợ / trả nợ</a><a href="#butru">⑥ Bù trừ &amp; đối trừ</a>
+  </div>
+
+  <h2 class="sec" id="tien"><span class="n">①</span> Thu / chi tiền</h2>
+  <p class="lead">Tiền vào ghi <span class="tkno">Nợ 111/112</span>, tiền ra ghi <span class="tkco">Có 111/112</span>.
+  TK <b>112 luôn gắn ngân hàng nào</b> (để lên sổ tiền gửi chi tiết).</p>
+
+  <div class="jx"><div class="head"><span class="num">1</span><span class="ttl">Thu tiền mặt khi bán hàng</span><span class="amt">9.720.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền mặt → Phiếu thu</span> (hoặc tự sinh từ bán hàng thu ngay).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 111</span> — Tiền mặt</td><td class="r">9.720.000</td></tr>
+        <tr><td><span class="tkco">Có 5111</span> + <span class="tkco">33311</span> (doanh thu + thuế)</td><td class="r">9.720.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> tiền vào quỹ → 111 tăng. Sổ quỹ tiền mặt cộng dồn mọi phiếu thu/chi ra số dư cuối ngày.</div></div></div>
+
+  <h2 class="sec" id="chuyen"><span class="n">②</span> Chuyển tiền nội bộ giữa 2 ngân hàng</h2>
+  <div class="jx"><div class="head"><span class="num">2</span><span class="ttl">Điều chuyển 50tr: Vietcombank → Techcombank</span><span class="amt">50.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền gửi → Chuyển nội bộ</span>.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> <span class="det">(Techcombank)</span></td><td class="r">50.000.000</td></tr>
+        <tr><td><span class="tkco">Có 112</span> <span class="det">(Vietcombank)</span></td><td class="r">50.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> cùng TK 112 nhưng <b>khác ngân hàng</b> → tổng tiền gửi không đổi, chỉ chuyển giữa 2 tài khoản chi tiết.
+        Nhờ gắn chi tiết NH mà bút toán này có nghĩa (nếu không sẽ là 112/112 vô nghĩa).</div></div></div>
+
+  <h2 class="sec" id="kk"><span class="n">③</span> Kiểm kê quỹ tiền mặt</h2>
+  <div class="jx"><div class="head"><span class="num">3</span><span class="ttl">Kiểm kê quỹ cuối kỳ — đếm khớp sổ</span><span class="amt">0</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền mặt → Kiểm kê quỹ</span> → nhập mệnh giá × số tờ → so với sổ.</div>
+      <table class="dk"><tr><th>Kết quả</th><th class="r">Số tiền</th></tr>
+        <tr><td>Tồn sổ = tiền đếm thực → <b>không chênh lệch</b></td><td class="r">khớp</td></tr></table>
+      <div class="why"><b>Vì sao:</b> khớp thì <b>không cần bút toán</b>. Nếu lệch: <b>thiếu</b> → Nợ 1381 / Có 111; <b>thừa</b> → Nợ 111 / Có 3381
+        (chờ xử lý). Biên bản kiểm kê ghi theo từng mệnh giá tiền.</div></div></div>
+
+  <h2 class="sec" id="vay"><span class="n">④</span> Vay vốn ngân hàng</h2>
+  <div class="jx"><div class="head"><span class="num">4</span><span class="ttl">Khế ước vay BIDV 100tr, kỳ hạn 12 tháng, 9%/năm</span><span class="amt">100.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền gửi → Khế ước vay</span> (khai báo hợp đồng vay), rồi <b>giải ngân</b>.</div>
+      <table class="dk"><tr><th>Định khoản (khi giải ngân)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> — Tiền gửi NH</td><td class="r">100.000.000</td></tr>
+        <tr><td><span class="tkco">Có 341</span> — Vay &amp; nợ thuê tài chính</td><td class="r">100.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> nhận tiền vay → tài sản (112) tăng, đồng thời <b>nợ vay 341 tăng</b>. Lãi vay hàng kỳ:
+        <span class="tkno">Nợ 635</span> (CP tài chính) / <span class="tkco">Có 112</span>.
+        <i>(Bộ COVERAGE đã khai khế ước; phần giải ngân/tính lãi là định khoản chuẩn theo chế độ.)</i></div></div></div>
+
+  <h2 class="sec" id="congno"><span class="n">⑤</span> Thu nợ khách · Trả nợ nhà cung cấp</h2>
+  <div class="jx"><div class="head"><span class="num">5</span><span class="ttl">Thu nợ khách hàng qua ngân hàng</span><span class="amt">12.960.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền gửi → Thu tiền theo hóa đơn</span> (chọn HĐ bán còn nợ).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> <span class="det">(Vietcombank)</span></td><td class="r">12.960.000</td></tr>
+        <tr><td><span class="tkco">Có 131</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">12.960.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> tiền về → 112 tăng; công nợ phải thu <b>131 giảm</b>. Doanh thu đã ghi từ lúc bán chịu.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">6</span><span class="ttl">Trả nợ nhà cung cấp một phần</span><span class="amt">10.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền gửi → Trả tiền theo hóa đơn</span>.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 331</span> <span class="det">(Nguồn Hàng Miền Tây)</span></td><td class="r">10.000.000</td></tr>
+        <tr><td><span class="tkco">Có 112</span> <span class="det">(Vietcombank)</span></td><td class="r">10.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> trả nợ → 331 giảm, 112 giảm. Báo cáo <b>Tuổi nợ</b> theo dõi từng HĐ còn nợ &amp; số ngày quá hạn.</div></div></div>
+
+  <h2 class="sec" id="butru"><span class="n">⑥</span> Bù trừ &amp; đối trừ công nợ</h2>
+  <p class="lead">Khi một đối tác <b>vừa là khách vừa là NCC</b>, hoặc có chứng từ giảm trừ, ta cấn trừ thay vì chuyển tiền 2 chiều.</p>
+
+  <div class="jx"><div class="head"><span class="num">7</span><span class="ttl">Bù trừ công nợ 131 ↔ 331 (cùng đối tác)</span><span class="amt">2.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tổng hợp → Bù trừ công nợ</span>. Đối tác vừa nợ ta (131) vừa được ta nợ (331).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 331</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">2.000.000</td></tr>
+        <tr><td><span class="tkco">Có 131</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">2.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> cấn trừ phần nhỏ hơn → giảm đồng thời cả phải thu và phải trả của cùng đối tác, khỏi chuyển tiền qua lại.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">8</span><span class="ttl">Đối trừ chứng từ 131 — bán chịu rồi trả lại toàn bộ</span><span class="amt">972.000</span></div>
+    <div class="body" style="grid-template-columns:1fr"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng → Đối trừ chứng từ</span>. Khớp chứng từ ghi giảm (hàng trả lại) với hóa đơn còn nợ.</div>
+      <table class="dk"><tr><th>Diễn biến (KH2 — Tạp hóa Hương)</th><th class="r">Số tiền</th></tr>
+        <tr><td>Bán chịu 30 kg → <span class="tkno">Nợ 131</span></td><td class="r">972.000</td></tr>
+        <tr><td>Trả lại toàn bộ → <span class="tkco">Có 131</span> (5212 + giảm 33311)</td><td class="r">972.000</td></tr>
+        <tr class="tot bal"><td>Đối trừ → công nợ 131 của KH2 về 0</td><td class="r">0</td></tr></table>
+      <div class="why"><b>Vì sao:</b> hóa đơn bán làm phát sinh phải thu; chứng từ trả lại làm phát sinh khoản giảm trừ. <b>Đối trừ</b> là thao tác
+        khớp 2 chứng từ này với nhau (không sinh bút toán mới) để báo cáo công nợ phản ánh đúng "đã tất toán".</div></div></div>
+
+  <div class="note">➡️ Nhóm khác: <a href="nv-mua-ban.html">Vốn·Mua·Bán</a> · <a href="nv-kho.html">Kho</a> · Tài sản · Lương&amp;Thuế · Cuối kỳ (đang bổ sung). <a href="index.html">← Trung tâm học</a></div>
+</div>
+
+<footer>Số liệu do phần mềm Lixin Hub sinh ra (công ty mẫu TM-DV COVERAGE). Nguồn: <code>web/teaching/entries.json</code>. · <a href="index.html">← Trung tâm học</a></footer>
+<script>
+(function(){
+  var prog=document.getElementById('prog'), de=document.documentElement;
+  addEventListener('scroll',function(){prog.style.width=(de.scrollTop/((de.scrollHeight-de.clientHeight)||1)*100)+'%';},{passive:true});
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver'in window))return;
+  document.querySelectorAll('.jx,.principle,.legend,.toc,.grid').forEach(function(e){e.classList.add('reveal');});
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(t){io.observe(t);});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nghiệp vụ Cuối kỳ — Hợp đồng, Giá thành, Kết chuyển, Báo cáo | Lixin Hub</title>
+<link rel="stylesheet" href="teaching.css">
+</head>
+<body>
+<div id="prog"></div>
+
+<header>
+  <div class="hwrap">
+    <p class="crumb"><a href="index.html">📚 Trung tâm học</a> › <a href="nv-mua-ban.html">Nghiệp vụ</a> › <b>Cuối kỳ &amp; Báo cáo</b></p>
+    <h1>📑 Hợp đồng · 🏗️ Giá thành · 🔚 Kết chuyển · 📊 Báo cáo</h1>
+    <p>Cuối kỳ: dồn doanh thu &amp; chi phí về <b>911</b> để ra lãi/lỗ, chuyển sang <b>4212</b>, khóa sổ, rồi lên
+    4 báo cáo tài chính. Kỳ mẫu này <b>LỖ</b> — minh họa luôn cách xử lý khi không có lãi.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="src">📌 <b>Nguồn:</b> dump <code>CoverageSeeder</code> — kết chuyển tháng 6/2026 (bút toán <code>KC202606</code>).</div>
+
+  <div class="toc">
+    <a href="#hd">① Hợp đồng (PnL)</a><a href="#gt">② Giá thành</a><a href="#kc">③ Kết chuyển</a>
+    <a href="#khoa">④ Khóa sổ</a><a href="#b02">⑤ Báo cáo KQKD</a><a href="#bctc">⑥ Bộ BCTC</a>
+  </div>
+
+  <h2 class="sec" id="hd"><span class="n">①</span> Hợp đồng — lãi/lỗ theo từng hợp đồng</h2>
+  <div class="jx"><div class="head"><span class="num">1</span><span class="ttl">Ghi doanh thu gắn Hợp đồng HD-BAN-01</span><span class="amt">22.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Hợp đồng</span> (đăng ký HĐ) → bút toán doanh thu chọn <b>mã hợp đồng</b>.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 131</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">22.000.000</td></tr>
+        <tr><td><span class="tkco">Có 5111</span> <span class="det">(HĐ: HD-BAN-01)</span></td><td class="r">20.000.000</td></tr>
+        <tr><td><span class="tkco">Có 33311</span> — GTGT đầu ra</td><td class="r">2.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> gắn <b>ContractCode</b> vào dòng doanh thu/chi phí → phần mềm cộng dồn <b>doanh thu − chi phí theo từng HĐ</b>
+        ra lãi/lỗ riêng. Dùng cho HĐ bán &amp; HĐ mua (theo dõi tiến độ, công nợ theo hợp đồng).</div></div></div>
+
+  <h2 class="sec" id="gt"><span class="n">②</span> Giá thành (sản xuất giản đơn)</h2>
+  <div class="note">📋 Bộ COVERAGE là <b>thương mại–dịch vụ</b> (không sản xuất). Với DN sản xuất, luồng giá thành giản đơn:</div>
+  <table class="grid">
+    <tr><th>Bước</th><th>Định khoản</th></tr>
+    <tr><td>Tập hợp chi phí SX</td><td><span class="tkno">Nợ 621</span> NVL trực tiếp · <span class="tkno">622</span> nhân công · <span class="tkno">627</span> SX chung / <span class="tkco">Có 152/334/214…</span></td></tr>
+    <tr><td>Kết chuyển vào dở dang</td><td><span class="tkno">Nợ 154</span> / <span class="tkco">Có 621, 622, 627</span></td></tr>
+    <tr><td>Nhập kho thành phẩm (giá thành Z)</td><td><span class="tkno">Nợ 155</span> / <span class="tkco">Có 154</span></td></tr>
+    <tr><td>Khi bán thành phẩm — giá vốn</td><td><span class="tkno">Nợ 632</span> / <span class="tkco">Có 155</span></td></tr>
+  </table>
+  <div class="note">Lixin Hub có PP giản đơn (621/622/627→154→155); các PP hệ số/tỷ lệ/định mức đang phát triển.</div>
+
+  <h2 class="sec" id="kc"><span class="n">③</span> Kết chuyển xác định KQKD (→ 911 → 4212)</h2>
+  <p class="lead">Dồn hết doanh thu &amp; chi phí về <b>911</b>. Màn: <span class="scr">Tổng hợp → Kết chuyển lãi lỗ</span> (idempotent, xem trước được).</p>
+  <table class="grid">
+    <tr><th>Bút toán kết chuyển (tháng 6)</th><th class="r">Số tiền</th></tr>
+    <tr><td>K/c doanh thu: <span class="tkno">Nợ 5111</span> 43,45tr + <span class="tkno">Nợ 5113</span> 7tr → <span class="tkco">Có 911</span></td><td class="r">50.450.000</td></tr>
+    <tr><td>K/c giảm trừ DT: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 5212</span> (hàng bán trả lại)</td><td class="r">1.500.000</td></tr>
+    <tr><td>K/c chi phí: <span class="tkno">Nợ 911</span> → <span class="tkco">Có 632</span> 14,6 · <span class="tkco">6421</span> 24,7 · <span class="tkco">6424</span> 6 · <span class="tkco">6427</span> 7 · <span class="tkco">6425</span> 2 · <span class="tkco">6423</span> 1</td><td class="r">55.300.000</td></tr>
+    <tr class="tot"><td>Chênh lệch 911: 50,45 − 1,5 − 55,3 = <b>LỖ</b></td><td class="r">−6.350.000</td></tr>
+    <tr class="tot bal"><td>K/c lỗ: <span class="tkno">Nợ 4212</span> → <span class="tkco">Có 911</span></td><td class="r">6.350.000</td></tr>
+  </table>
+  <div class="principle" style="border-left-color:var(--co)">
+    ⚠️ <b>Kỳ này LỖ 6.350.000</b> vì chi phí (giá vốn + lương + khấu hao + dịch vụ) lớn hơn doanh thu trong tháng đầu hoạt động.
+    Lỗ ghi <b>Nợ 4212</b> (giảm lợi nhuận chưa phân phối). <b>Lỗ thì KHÔNG phát sinh thuế TNDN.</b>
+  </div>
+
+  <h2 class="sec" id="khoa"><span class="n">④</span> Khóa sổ kỳ</h2>
+  <div class="jx"><div class="head"><span class="num">2</span><span class="ttl">Khóa sổ tháng 6/2026</span></div>
+    <div class="body" style="grid-template-columns:1fr"><div class="step"><b>Màn:</b> <span class="scr">Tổng hợp → Khóa sổ / Mở kỳ</span> theo tháng.</div>
+      <div class="why"><b>Vì sao:</b> sau khi kết chuyển &amp; đối chiếu xong, <b>khóa kỳ</b> để chặn ghi/sửa/bỏ-ghi/kết-chuyển vào kỳ đã chốt
+        → bảo toàn số liệu đã báo cáo. Cần điều chỉnh thì mở kỳ lại (có nhật ký). Không sinh bút toán — là trạng thái kiểm soát.</div></div></div>
+
+  <h2 class="sec" id="b02"><span class="n">⑤</span> Báo cáo Kết quả kinh doanh (B02-DN)</h2>
+  <table class="grid">
+    <tr><th>Chỉ tiêu</th><th class="r">Số tiền</th></tr>
+    <tr><td>1. Doanh thu thuần (5111 + 5113 − 5212)</td><td class="r">48.950.000</td></tr>
+    <tr><td>2. Giá vốn hàng bán (632)</td><td class="r">14.600.000</td></tr>
+    <tr><td><b>3. Lợi nhuận gộp</b> (1 − 2)</td><td class="r">34.350.000</td></tr>
+    <tr><td>4. Chi phí QLKD &amp; dịch vụ mua ngoài (6421 24,7 + 6427 7 + 6424 6 + 6425 2 + 6423 1)</td><td class="r">40.700.000</td></tr>
+    <tr><td><b>5. Lợi nhuận thuần trước thuế</b> (3 − 4)</td><td class="r">−6.350.000</td></tr>
+    <tr><td>6. Chi phí thuế TNDN (lỗ → không phát sinh)</td><td class="r">0</td></tr>
+    <tr class="tot bal"><td>7. LỢI NHUẬN SAU THUẾ</td><td class="r">−6.350.000</td></tr>
+  </table>
+  <div class="note">Khớp với bút toán kết chuyển: lỗ <b>6.350.000</b> = số ghi Nợ 4212.</div>
+
+  <h2 class="sec" id="bctc"><span class="n">⑥</span> Bộ báo cáo tài chính đầy đủ</h2>
+  <div class="legend">
+    <div><code>B01</code> <b>Bảng cân đối kế toán</b> — bất biến vàng: Tổng tài sản = Tổng nguồn vốn.</div>
+    <div><code>B02</code> <b>Kết quả kinh doanh</b> — doanh thu − chi phí → lãi/lỗ (bảng trên).</div>
+    <div><code>B03</code> <b>Lưu chuyển tiền tệ</b> — tiền chảy theo 3 dòng: KD / Đầu tư / Tài chính.</div>
+    <div><code>B09</code> <b>Thuyết minh BCTC</b> — chính sách kế toán + bóc tách khoản mục.</div>
+  </div>
+  <div class="note">📒 Xem trọn một kỳ số tròn (có lãi) ở trang <a href="quy-trinh-ke-toan.html">Quy trình A→Z: định khoản → báo cáo</a>:
+    11 nghiệp vụ → kết chuyển → B01/B02/B03/B09 cân đối từng đồng.</div>
+
+  <div class="note">➡️ Nhóm khác: <a href="nv-mua-ban.html">Vốn·Mua·Bán</a> · <a href="nv-kho.html">Kho</a> · <a href="nv-tien-congno.html">Tiền&amp;Công nợ</a> · <a href="nv-tai-san.html">Tài sản</a> · <a href="nv-luong-thue.html">Lương&amp;Thuế</a>. <a href="index.html">← Trung tâm học</a></div>
+</div>
+
+<footer>Số liệu do phần mềm Lixin Hub sinh ra (công ty mẫu TM-DV COVERAGE). Nguồn: <code>web/teaching/entries.json</code>. · <a href="index.html">← Trung tâm học</a></footer>
+<script>
+(function(){
+  var prog=document.getElementById('prog'), de=document.documentElement;
+  addEventListener('scroll',function(){prog.style.width=(de.scrollTop/((de.scrollHeight-de.clientHeight)||1)*100)+'%';},{passive:true});
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver'in window))return;
+  document.querySelectorAll('.jx,.principle,.legend,.toc,.grid').forEach(function(e){e.classList.add('reveal');});
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(t){io.observe(t);});
+})();
+</script>
+</body>
+</html>

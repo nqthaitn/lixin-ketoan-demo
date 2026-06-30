@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nghiệp vụ Vốn · Mua hàng · Bán hàng — học định khoản | Lixin Hub</title>
+<link rel="stylesheet" href="teaching.css">
+</head>
+<body>
+<div id="prog"></div>
+
+<header>
+  <div class="hwrap">
+    <p class="crumb"><a href="index.html">📚 Trung tâm học</a> › <a href="hoc-nghiep-vu.html">Học nghiệp vụ</a> › <b>Vốn · Mua · Bán</b></p>
+    <h1>💰 Vốn góp · 🛒 Mua hàng · 🧾 Bán hàng</h1>
+    <p>Nhóm 1 của thư viện "học tất cả nghiệp vụ". Mỗi nghiệp vụ: <b>làm ở màn nào</b> → <b>vào tài khoản nào</b>
+    (đúng <b>TK lá</b> + chi tiết ngân hàng/đối tượng) → <b>định khoản Nợ/Có</b> → <b>vì sao</b>.
+    Tất cả số dưới đây <b>do phần mềm sinh ra</b> qua công ty mẫu <b>TM-DV COVERAGE</b> (đã kiểm "đúng từng đồng").</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="src">📌 <b>Nguồn số liệu:</b> dump tự động từ <code>CoverageSeeder</code> → <code>web/teaching/entries.json</code>
+    (39 bút toán, Σ Nợ = Σ Có). Mặt hàng <b>Gạo thơm</b> (mua 20.000đ/kg) · <b>VAT 8%</b> (mức giảm áp dụng 2026).
+    Đối tác: NCC <i>Nguồn Hàng Miền Tây</i> · KH <i>Bán Lẻ Sài Gòn</i>.</div>
+
+  <div class="principle">
+    🔑 <b>Nguyên lý định khoản kép</b> — mỗi nghiệp vụ ghi ≥2 tài khoản: một bên <span class="tkno">Nợ</span>, một bên
+    <span class="tkco">Có</span>, <b>tổng Nợ = tổng Có</b>. <b>Tài sản/Chi phí</b> tăng ghi <span class="tkno">Nợ</span>;
+    <b>Nợ phải trả/Vốn/Doanh thu</b> tăng ghi <span class="tkco">Có</span>.
+  </div>
+
+  <div class="toc">
+    <a href="#von">① Vốn góp</a><a href="#mua">② Mua hàng</a><a href="#ban">③ Bán hàng</a><a href="#dtnt">④ Doanh thu nhận trước</a>
+  </div>
+
+  <div class="legend" style="margin-top:14px">
+    <div><code>111</code> Tiền mặt · <code>112</code> Tiền gửi NH <i>(chi tiết từng ngân hàng)</i></div>
+    <div><code>131</code> Phải thu KH · <code>331</code> Phải trả NCC <i>(chi tiết đối tượng)</i></div>
+    <div><code>1331</code> GTGT được khấu trừ (đầu vào) · <code>33311</code> GTGT đầu ra</div>
+    <div><code>156</code> Hàng hóa (tồn kho) · <code>632</code> Giá vốn hàng bán</div>
+    <div><code>5111</code> DT bán hàng · <code>5113</code> DT dịch vụ · <code>5212</code> Hàng bán bị trả lại</div>
+    <div><code>3387</code> Doanh thu chờ phân bổ · <code>6427</code> CP dịch vụ mua ngoài · <code>41111</code> Vốn góp</div>
+  </div>
+
+  <!-- ───────────── VỐN ───────────── -->
+  <h2 class="sec" id="von"><span class="n">①</span> Vốn góp — khởi đầu doanh nghiệp</h2>
+  <p class="lead">Trước khi mua bán, công ty cần <b>vốn</b>. Chủ sở hữu góp tiền vào → tài sản (tiền) tăng, nguồn vốn chủ tăng.</p>
+
+  <div class="jx"><div class="head"><span class="num">1</span><span class="ttl">Chủ góp vốn 500tr vào tài khoản ngân hàng</span><span class="amt">500.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tổng hợp → Chứng từ nghiệp vụ khác</span>.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> <span class="det">(Vietcombank)</span></td><td class="r">500.000.000</td></tr>
+        <tr><td><span class="tkco">Có 41111</span> — Vốn góp chủ sở hữu</td><td class="r">500.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> tiền vào NH → tài sản <b>112 tăng</b> (ghi Nợ, gắn TK Vietcombank); nguồn là vốn chủ → <b>41111 tăng</b> (Có).</div></div></div>
+
+  <!-- ───────────── MUA ───────────── -->
+  <h2 class="sec" id="mua"><span class="n">②</span> Mua hàng <span class="pill">đầu vào · 331 · 1331</span></h2>
+  <p class="lead">Mua thì <b>hàng/chi phí tăng</b> (ghi Nợ) + <b>thuế GTGT đầu vào 1331</b> (được khấu trừ) → đối ứng
+  <b>331 phải trả NCC</b> (mua chịu) hoặc <b>111/112</b> (trả ngay).</p>
+
+  <div class="jx"><div class="head"><span class="num">2</span><span class="ttl">Mua 1.000 kg gạo nhập kho, chưa trả tiền</span><span class="amt">21.600.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Mua hàng</span> → "Chưa trả tiền". Đơn giá 20.000, VAT 8%.</div>
+      <table class="dk"><tr><th>Định khoản (gộp kinh tế)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 156</span> — Hàng hóa (1.000 × 20.000)</td><td class="r">20.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 1331</span> — GTGT đầu vào (8%)</td><td class="r">1.600.000</td></tr>
+        <tr><td><span class="tkco">Có 331</span> <span class="det">(Nguồn Hàng Miền Tây)</span></td><td class="r">21.600.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> hàng vào kho → <b>156 tăng 20tr</b>; thuế đầu vào khấu trừ sau → <b>1331 tăng 1,6tr</b>; nợ NCC → <b>331 tăng 21,6tr</b>.
+        <b>Tồn: 1.000 kg, giá vốn 20.000/kg.</b> <i>Phần mềm tách thành 2 chứng từ liên kết: phiếu nhập kho (156/331) + hóa đơn ghi thuế (1331/331) — cộng lại bằng bút toán trên.</i></div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">3</span><span class="ttl">Trả tiền nhà cung cấp một phần qua ngân hàng</span><span class="amt">10.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền gửi</span> → "Trả tiền theo hóa đơn" (chọn HĐ mua còn nợ).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 331</span> <span class="det">(Nguồn Hàng Miền Tây)</span></td><td class="r">10.000.000</td></tr>
+        <tr><td><span class="tkco">Có 112</span> <span class="det">(Vietcombank)</span></td><td class="r">10.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> trả bớt nợ → <b>331 giảm 10tr</b> (còn nợ 11,6tr); tiền ra NH → <b>112 giảm</b>.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">4</span><span class="ttl">Mua dịch vụ thuê kho bãi (chịu)</span><span class="amt">5.400.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Mua hàng</span> → dòng <b>không phải hàng hóa</b> (ghi thẳng chi phí).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 6427</span> — CP dịch vụ mua ngoài</td><td class="r">5.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 1331</span> — GTGT đầu vào (8%)</td><td class="r">400.000</td></tr>
+        <tr><td><span class="tkco">Có 331</span> <span class="det">(Nguồn Hàng Miền Tây)</span></td><td class="r">5.400.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> dịch vụ <b>không qua kho</b> → ghi thẳng <b>chi phí 6427</b> (không vào 156). Thuế vẫn khấu trừ qua 1331.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">5</span><span class="ttl">Đơn mua hàng → nhận 200 kg gạo (chịu)</span><span class="amt">4.320.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Mua hàng → Đơn mua hàng</span> → lập đơn → <b>Nhận hàng</b> (sinh phiếu nhập + hóa đơn).</div>
+      <table class="dk"><tr><th>Định khoản (gộp)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 156</span> — Hàng hóa (200 × 20.000)</td><td class="r">4.000.000</td></tr>
+        <tr><td><span class="tkno">Nợ 1331</span> — GTGT đầu vào (8%)</td><td class="r">320.000</td></tr>
+        <tr><td><span class="tkco">Có 331</span> <span class="det">(Nguồn Hàng Miền Tây)</span></td><td class="r">4.320.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> đơn mua chỉ là <b>kế hoạch</b> (chưa định khoản); khi <b>nhận hàng</b> mới ghi sổ như mua thường. Tồn gạo +200 kg.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">6</span><span class="ttl">Phân bổ chi phí mua vào giá nhập (landed cost)</span><span class="amt">1.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Mua hàng → Phân bổ chi phí thu mua</span>. Phí vận chuyển 1tr cộng vào giá gạo.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 156</span> — Hàng hóa (tăng đơn giá vốn)</td><td class="r">1.000.000</td></tr>
+        <tr><td><span class="tkco">Có 331</span> <span class="det">(Nguồn Hàng Miền Tây)</span></td><td class="r">1.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> chi phí thu mua (vận chuyển, bốc xếp) là <b>một phần giá vốn hàng</b> → cộng vào <b>156</b> để
+        đơn giá bình quân tăng, phản ánh đúng giá thật. Không ghi vào chi phí kỳ.</div></div></div>
+
+  <!-- ───────────── BÁN ───────────── -->
+  <h2 class="sec" id="ban"><span class="n">③</span> Bán hàng <span class="pill">đầu ra · 511 · 33311 · 632</span></h2>
+  <p class="lead">Bán hàng hóa = <b>2 bút toán</b>: (a) ghi <b>doanh thu</b> + thuế đầu ra; (b) đồng thời <b>xuất kho ghi giá vốn 632</b>
+  (phần mềm tự sinh theo đơn giá tồn). Bán <b>dịch vụ</b> thì không có giá vốn.</p>
+
+  <div class="jx"><div class="head"><span class="num">7</span><span class="ttl">Bán 300 kg gạo, thu tiền mặt ngay</span><span class="amt">9.720.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng</span>. Đơn giá bán 30.000, VAT 8%. <b>Giá vốn ghi TỰ ĐỘNG.</b></div>
+      <table class="dk"><tr><th>(a) Doanh thu</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 111</span> — Tiền mặt</td><td class="r">9.720.000</td></tr>
+        <tr><td><span class="tkco">Có 5111</span> — Doanh thu (300 × 30.000)</td><td class="r">9.000.000</td></tr>
+        <tr><td><span class="tkco">Có 33311</span> — GTGT đầu ra (8%)</td><td class="r">720.000</td></tr></table>
+      <table class="dk" style="margin-top:8px"><tr><th>(b) Giá vốn (tự động)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 632</span> — Giá vốn (300 × BQ 20.000)</td><td class="r">6.000.000</td></tr>
+        <tr><td><span class="tkco">Có 156</span> — Hàng hóa</td><td class="r">6.000.000</td></tr></table>
+      <div class="why"><b>Vì sao — nghiệp vụ "2 bút toán" quan trọng nhất:</b> (a) ghi <b>doanh thu 9tr</b> + thuế; (b) đồng thời
+        xuất kho ghi <b>giá vốn 6tr</b> (theo đơn giá bình quân tồn). <b>Lãi gộp lô này = 9 − 6 = 3tr.</b></div>
+      <div class="tbox" style="grid-column:1/-1"><div class="cap">🔎 Sổ chữ T — bên trái <span class="tkno">Nợ</span>, phải <span class="tkco">Có</span>. Mỗi TK luôn cân.</div>
+        <div class="trow">
+          <div class="tacc"><div class="tn">111 — Tiền mặt</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l on">9.720.000</div><div class="r"></div></div></div>
+          <div class="tacc"><div class="tn">5111 — Doanh thu</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">9.000.000</div></div></div>
+          <div class="tacc"><div class="tn">33311 — Đầu ra</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">720.000</div></div></div>
+          <div class="tacc"><div class="tn">632 — Giá vốn</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l on">6.000.000</div><div class="r"></div></div></div>
+          <div class="tacc"><div class="tn">156 — Hàng hóa</div><div class="hd"><span>Nợ</span><span>Có</span></div><div class="tg"><div class="l"></div><div class="r on">6.000.000</div></div></div>
+        </div></div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">8</span><span class="ttl">Bán 400 kg gạo, khách nợ (công nợ 131)</span><span class="amt">12.960.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng</span> → "Chưa thu tiền". Giá vốn tự động.</div>
+      <table class="dk"><tr><th>(a) Doanh thu</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 131</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">12.960.000</td></tr>
+        <tr><td><span class="tkco">Có 5111</span> — Doanh thu (400 × 30.000)</td><td class="r">12.000.000</td></tr>
+        <tr><td><span class="tkco">Có 33311</span> — GTGT đầu ra (8%)</td><td class="r">960.000</td></tr></table>
+      <table class="dk" style="margin-top:8px"><tr><th>(b) Giá vốn (tự động)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 632</span> — Giá vốn (400 × BQ 20.000)</td><td class="r">8.000.000</td></tr>
+        <tr><td><span class="tkco">Có 156</span> — Hàng hóa</td><td class="r">8.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> bán chịu → thay vì tiền, ghi <b>131 phải thu 12,96tr</b> (gắn đối tượng KH). Giá vốn vẫn ghi ngay khi xuất kho.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">9</span><span class="ttl">Thu nợ khách hàng qua ngân hàng</span><span class="amt">12.960.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Tiền gửi</span> → "Thu tiền theo hóa đơn".</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> <span class="det">(Vietcombank)</span></td><td class="r">12.960.000</td></tr>
+        <tr><td><span class="tkco">Có 131</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">12.960.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> khách trả nợ → tiền NH <b>112 tăng</b>, công nợ <b>131 về 0</b>. Doanh thu đã ghi từ lúc bán (nv 8), nay chỉ thu tiền.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">10</span><span class="ttl">Bán dịch vụ vận chuyển, thu tiền mặt</span><span class="amt">3.240.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng</span> → mặt hàng là <b>dịch vụ</b>. VAT 8%.</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 111</span> — Tiền mặt</td><td class="r">3.240.000</td></tr>
+        <tr><td><span class="tkco">Có 5113</span> — Doanh thu dịch vụ (2 × 1.500.000)</td><td class="r">3.000.000</td></tr>
+        <tr><td><span class="tkco">Có 33311</span> — GTGT đầu ra</td><td class="r">240.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> dịch vụ <b>không qua kho</b> → <b>không có giá vốn 632</b>. Chỉ ghi doanh thu (5113) + thuế.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">11</span><span class="ttl">Báo giá → Đơn đặt hàng → Bán (50 kg, giá bảng giá 31.000)</span><span class="amt">1.674.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng → Báo giá</span> → chuyển <b>Đơn đặt hàng</b> → lập <b>Chứng từ bán</b>.</div>
+      <table class="dk"><tr><th>(a) Doanh thu</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 111</span> — Tiền mặt</td><td class="r">1.674.000</td></tr>
+        <tr><td><span class="tkco">Có 5111</span> — Doanh thu (50 × 31.000)</td><td class="r">1.550.000</td></tr>
+        <tr><td><span class="tkco">Có 33311</span> — GTGT đầu ra</td><td class="r">124.000</td></tr></table>
+      <table class="dk" style="margin-top:8px"><tr><th>(b) Giá vốn</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 632</span> (50 × BQ 20.000) / <span class="tkco">Có 156</span></td><td class="r">1.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> <b>Báo giá</b> và <b>Đơn đặt hàng</b> chưa ghi sổ (chỉ là cam kết); chỉ khi lập <b>chứng từ bán</b>
+        mới định khoản. Giá bán 31.000 lấy từ <b>chính sách giá 2026</b>. Lãi gộp = 1,55 − 1 = 0,55tr.</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">12</span><span class="ttl">Khách trả lại 20 kg hàng đã bán</span><span class="amt">648.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng → Hàng bán trả lại</span>. Đảo doanh thu + nhập lại kho.</div>
+      <table class="dk"><tr><th>(a) Đảo doanh thu</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 5212</span> — Hàng bán bị trả lại (20 × 30.000)</td><td class="r">600.000</td></tr>
+        <tr><td><span class="tkno">Nợ 33311</span> — Giảm GTGT đầu ra</td><td class="r">48.000</td></tr>
+        <tr><td><span class="tkco">Có 131</span> <span class="det">(Bán Lẻ Sài Gòn)</span></td><td class="r">648.000</td></tr></table>
+      <table class="dk" style="margin-top:8px"><tr><th>(b) Nhập lại kho (đảo giá vốn)</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 156</span> (20 × 20.000) / <span class="tkco">Có 632</span></td><td class="r">400.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> trả lại = bán ngược → <b>5212 ghi giảm doanh thu</b> (cuối kỳ trừ vào 511), giảm thuế đầu ra, giảm
+        phải thu. Hàng về kho → <b>156 tăng lại</b>, <b>giá vốn 632 giảm</b>.</div></div></div>
+
+  <!-- ───────────── DT NHẬN TRƯỚC ───────────── -->
+  <h2 class="sec" id="dtnt"><span class="n">④</span> Doanh thu nhận trước <span class="pill">3387 → phân bổ</span></h2>
+  <p class="lead">Thu tiền trước cho dịch vụ <b>nhiều kỳ</b> (vd cho thuê kho 12 tháng) → chưa được ghi hết doanh thu ngay,
+  mà treo <b>3387</b> rồi <b>phân bổ dần</b> mỗi kỳ.</p>
+
+  <div class="jx"><div class="head"><span class="num">13</span><span class="ttl">Thu trước tiền cho thuê kho 12 tháng</span><span class="amt">12.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng → Doanh thu nhận trước</span> (khai báo + thu tiền).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 112</span> <span class="det">(Vietcombank)</span></td><td class="r">12.000.000</td></tr>
+        <tr><td><span class="tkco">Có 3387</span> — Doanh thu chờ phân bổ</td><td class="r">12.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> nhận tiền nhưng <b>chưa cung cấp dịch vụ</b> → chưa phải doanh thu, treo <b>3387</b> (là một khoản phải trả/nghĩa vụ).</div></div></div>
+
+  <div class="jx"><div class="head"><span class="num">14</span><span class="ttl">Phân bổ doanh thu nhận trước — tháng 6 (12tr ÷ 12)</span><span class="amt">1.000.000</span></div>
+    <div class="body"><div class="step"><b>Màn:</b> <span class="scr">Bán hàng → Doanh thu nhận trước → Phân bổ kỳ</span> (tự sinh).</div>
+      <table class="dk"><tr><th>Định khoản</th><th class="r">Số tiền</th></tr>
+        <tr><td><span class="tkno">Nợ 3387</span> — Doanh thu chờ phân bổ</td><td class="r">1.000.000</td></tr>
+        <tr><td><span class="tkco">Có 5113</span> — Doanh thu dịch vụ</td><td class="r">1.000.000</td></tr></table>
+      <div class="why"><b>Vì sao:</b> mỗi tháng "tiêu hóa" 1/12 nghĩa vụ → chuyển <b>1tr từ 3387 sang doanh thu 5113</b>. Sau 12 kỳ, 3387 về 0.</div></div></div>
+
+  <div class="note">➡️ <b>Tiếp theo:</b> các nhóm <b>Kho · Tiền &amp; Công nợ · Tài sản (TSCĐ/CCDC) · Lương &amp; Thuế · Cuối kỳ &amp; Báo cáo</b>
+    đang được bổ sung. Quay lại <a href="index.html">Trung tâm học</a>.</div>
+</div>
+
+<footer>
+  Số liệu &amp; định khoản <b>do phần mềm Lixin Hub sinh ra</b> (công ty mẫu TM-DV COVERAGE, qua bộ kiểm tra "đúng từng đồng":
+  chỉ ghi TK lá, Nợ = Có, gắn chi tiết ngân hàng/đối tượng). Nguồn: <code>web/teaching/entries.json</code>. · <a href="index.html">← Trung tâm học</a>
+</footer>
+<script>
+(function(){
+  var prog=document.getElementById('prog'), de=document.documentElement;
+  addEventListener('scroll',function(){prog.style.width=(de.scrollTop/((de.scrollHeight-de.clientHeight)||1)*100)+'%';},{passive:true});
+  var rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(rm||!('IntersectionObserver'in window))return;
+  document.querySelectorAll('.jx,.principle,.legend,.toc').forEach(function(e){e.classList.add('reveal');});
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(t){io.observe(t);});
+})();
+</script>
+</body>
+</html>
